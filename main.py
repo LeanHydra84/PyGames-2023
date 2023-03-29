@@ -1,7 +1,6 @@
 import pygame
 import random as rand
-
-print("Hello World!")
+import guytest
 
 def random_colorint():
     return rand.randrange(0, 255, 1)
@@ -16,6 +15,17 @@ running = True
 render = True
 
 screencolor = random_color()
+clock = pygame.time.Clock()
+
+guy = guytest.SheetGuy(pygame.image.load("assets\\sprite_sheet_test.png").convert_alpha(), 1, 0)
+guy.scale = 10
+
+group = pygame.sprite.Group()
+guy.add(group)
+
+#frame = sf.import_sprite_static("frame0.png")
+
+keys = [False, False]
 
 while running:
 
@@ -25,25 +35,48 @@ while running:
         if event.type == pygame.QUIT: # On Screen Close
             running = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN: # On Mouse Down
+        elif event.type == pygame.MOUSEBUTTONDOWN: # On Mouse Down
             screencolor = random_color()
             render = True
 
-        if event.type == pygame.KEYDOWN: # On Key Down
+        elif event.type == pygame.KEYDOWN: # On Key Down
 
-            if event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_ESCAPE: # Escape -- Close game
                 running = False
 
+            if event.key == pygame.K_a:
+                keys[0] = True
+            elif event.key == pygame.K_d:
+                keys[1] = True
+
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_a:
+                keys[0] = False
+            elif event.key == pygame.K_d:
+                keys[1] = False
+
+    # Spritegroup update
+    if keys[0] == keys[1]:
+        pass
+    elif keys[0]:
+        guy.position.x -= 4
+        guy.right = False
+    elif keys[1]:
+        guy.position.x += 4
+        guy.right = True
+
+    group.update()
     
-    # Draw Screen
-    if render == True:
 
-        # Begin draw frame
-        screen.fill(screencolor)
+    # Begin draw frame
+    screen.fill(screencolor)
+    group.draw(screen)
 
+    # End of frame render
+    pygame.display.flip()
+    clock.tick(60)
+    render = False
 
-        # End of frame render
-        pygame.display.flip()
-        render = False
+    
 
 pygame.quit()
