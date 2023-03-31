@@ -1,6 +1,6 @@
 import pygame
 import room_creator
-from character import create_character
+import player
 SCREENSIZE = (1280, 720)
 
 backgroundColor = pygame.Color(100, 100, 100, 255)
@@ -18,7 +18,7 @@ def main():
     running = True
 
     keys = [False, False, False, False]
-    char = create_character(5)
+    char = player.createplayer(5)
 
     chargroup = pygame.sprite.Group()
     chargroup.add(char)
@@ -56,7 +56,7 @@ def main():
 
         # Update
 
-        char.update(keys, None)
+        char.update(keys)
 
         # Draw
 
