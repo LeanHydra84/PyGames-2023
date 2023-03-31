@@ -1,6 +1,6 @@
 import pygame
 import room_creator
-
+from character import create_character
 SCREENSIZE = (1280, 720)
 
 backgroundColor = pygame.Color(100, 100, 100, 255)
@@ -18,6 +18,10 @@ def main():
     running = True
 
     keys = [False, False, False, False]
+    char = create_character(5)
+
+    chargroup = pygame.sprite.Group()
+    chargroup.add(char)
 
     while running:
         
@@ -50,9 +54,16 @@ def main():
                 elif event.key == pygame.K_d:
                     keys[3] = False
 
+        # Update
+
+        char.update(keys, None)
+
+        # Draw
+
         screen.fill(backgroundColor)
         map.group.draw(screen)
         
+        chargroup.draw(screen)
 
         clock.tick(60)
         pygame.display.flip()
