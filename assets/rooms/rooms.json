@@ -1,0 +1,22 @@
+{
+    "requiredrooms":
+    [
+        {
+            "image": "assets\\rooms\\debug_room_a.png",
+            "collider": "assets\\rooms\\debug_room_a_hitbox.png",
+            "doors": [
+                0, 17,
+                50, 7
+            ],
+            "items": [
+                {
+                    "type": "speed",
+                    "pos": { "x": 24, "y": 11 },
+                    "chance": 1
+                }
+            ]
+        }
+    ],
+
+    "connector_rooms": []
+}
