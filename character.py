@@ -54,15 +54,18 @@ class Character(pygame.sprite.Sprite):
                 self.curframe[1] += 1
         else:
             self.curframe[0] += 1
-
-    def update(self, movement, room):
-
+        
+    def update_frame_tick(self):
         # Animation
         self.frametick += 1
         if self.frametick > self.frametickspeed:
             self.frametick = 0
             self.increment_frames()
             self.set_active_frame()
+
+    def update(self, movement, room):
+
+        self.update_frame_tick()
 
         # Direction
         if self.right:

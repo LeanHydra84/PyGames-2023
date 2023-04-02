@@ -1,6 +1,9 @@
 import pygame
 import room_creator
 import player
+
+from layerManager import LayerManager
+
 SCREENSIZE = (1280, 720)
 
 backgroundColor = pygame.Color(100, 100, 100, 255)
@@ -18,10 +21,13 @@ def main():
     running = True
 
     keys = [False, False, False, False]
+
     char = player.createplayer(5)
 
-    chargroup = pygame.sprite.Group()
-    chargroup.add(char)
+    layers = LayerManager()
+    layers.add(map.group, "Map")
+    layers.add_new("Character").add(char)
+    layers.add_new("Legs").add(char.feet)
 
     while running:
         
@@ -56,14 +62,13 @@ def main():
 
         # Update
 
-        char.update(keys)
+        char.update(keys, pygame.Vector2(pygame.mouse.get_pos()))
 
         # Draw
 
         screen.fill(backgroundColor)
-        map.group.draw(screen)
-        
-        chargroup.draw(screen)
+
+        layers.render(screen)        
 
         clock.tick(60)
         pygame.display.flip()
