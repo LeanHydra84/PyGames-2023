@@ -4,25 +4,96 @@ import math
 
 from character import ImageBase
 
+class StateGraph:
+    def __init__(self, sheets):
+
+        self.sheet = sheets
+        self.states : list[ImageBase] = []
+        self.transfergraph = []
+
+        self._state = 0
+
+        # TEST CODE
+
+        self.states.append(sheets[0])
+        self.states.append(sheets[2])
+
+        self.transfergraph.append(0)
+        self.transfergraph.append(0)
+
+        # END TEST CODE
+
+        self.curframe = [0, 0]
+        self.frametick = 0
+        self.setup_surface()
+        self.calculate_active_frame()
+
+    def setup_surface(self):
+        dim = self.states[self._state].dimension
+        rect = self.states[self._state].img.get_rect()
+
+        self.sheetdim = dim
+        self.frametickspeed = self.states[self._state].speed
+        self.rect = pygame.Rect(0, 0, rect.w / (dim[0] + 1), rect.h / (dim[1] + 1))
+        self.activeFrame = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+
+    def state(self):
+        return self._state
+
+    # Change state, recalculate size of activeFrame surface, etc
+    def force_state(self, state: int):
+        self._state = state
+
+        self.curframe = [0, 0]
+        self.frametick = 0
+        
+        self.setup_surface()
+        self.calculate_active_frame()
+        
+
+    def calculate_active_frame(self):
+        self.activeFrame.fill(pygame.Color(0, 0, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        newRect = pygame.Rect(self.rect)
+        newRect.x = self.curframe[0] * self.rect.w
+        newRect.y = self.curframe[1] * self.rect.h
+        self.activeFrame.blit(self.states[self._state].img, (0, 0), newRect)
+
+    def increment_frames(self):
+        if(self.curframe[0] >= self.sheetdim[0]):
+            if self.curframe[1] >= self.sheetdim[1]:
+                self.curframe[0] = 0
+                self.curframe[1] = 0
+                # On animation complete
+                # Check if state should recalc
+                if self.transfergraph[self._state] != self._state:
+                    self.force_state(self.transfergraph[self._state])
+            else:
+                self.curframe[0] = 0
+                self.curframe[1] += 1
+        else:
+            self.curframe[0] += 1
+
+    def tick(self):
+        self.frametick += 1
+        if self.frametick > self.frametickspeed:
+            self.frametick = 0
+            self.increment_frames()
+            self.calculate_active_frame()
+        
+    
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, sheet: tuple[ImageBase]):
         pygame.sprite.Sprite.__init__(self)
 
         # Persistent Data (Sprites that do not change)
         self.sheet = sheet
-
-        # Semi-persistent data (Sprites that may change, but are not drawn and are not unrecoverable)
-        self.image_base : pygame.Surface = sheet[0].img
+        self.stategraph = StateGraph(sheet)
         self.feet = feet.Feet(self, sheet[1])
 
-        # Draw Sprites
-        self.sheetdim = sheet[0].dimension
-        rect : pygame.Rect = sheet[0].img.get_rect()
-        self.trueRect = pygame.Rect(0, 0, rect.w / (self.sheetdim[0] + 1), rect.h / (self.sheetdim[1] + 1))
-        self.rect = self.trueRect
-
-        self.activeFrame = pygame.Surface(self.trueRect.size, pygame.SRCALPHA)
-        self.image = self.activeFrame
+        # Sprite draw data -- NOT PERSISTENT --
+        self.image : pygame.Surface = None
+        self.rect : pygame.Rect = None
 
         # Movement
         self.position = pygame.Vector2()
@@ -30,52 +101,20 @@ class Player(pygame.sprite.Sprite):
         self.speed = 1
         self.moving = False
 
-        # Sprite sheet rendering
-        self.frametickspeed = sheet[0].speed
-        self.frametick = 0
-        self.curframe = [0, 0]
-
-        self.set_active_frame()
-    
-
-    def set_active_frame(self):
-        self.activeFrame.fill(pygame.Color(0, 0, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-        newRect = pygame.Rect(self.trueRect)
-        newRect.x = self.curframe[0] * self.trueRect.w
-        newRect.y = self.curframe[1] * self.trueRect.h
-        self.activeFrame.blit(self.image_base, (0, 0), newRect)
-        
-    def recalculate_imagebase(self, index):
-        newimgbase = self.sheet[index]
-        self.image_base = newimgbase.img
-        self.sheetdim = newimgbase.dimension
-        self.frametickspeed = newimgbase.speed
-        self.frametick = 0
-        self.set_active_frame()
-
-    def increment_frames(self):
-        if(self.curframe[0] >= self.sheetdim[0]):
-            if self.curframe[1] >= self.sheetdim[1]:
-                self.curframe[0] = 0
-                self.curframe[1] = 0
-            else:
-                self.curframe[0] = 0
-                self.curframe[1] += 1
-        else:
-            self.curframe[0] += 1
+    def attack_pressed(self):
+        if self.stategraph.state() == 0:
+            self.stategraph.force_state(1)
 
     def update(self, keys, mousepos : pygame.Vector2):
         
-        self.rotation = -(mousepos - self.position).as_polar()[1]
-        self.image = pygame.transform.rotate(self.activeFrame, self.rotation)
-        self.rect = self.image.get_rect()
-
         # Animation
-        self.frametick += 1
-        if self.frametick > self.frametickspeed:
-            self.frametick = 0
-            self.increment_frames()
-            self.set_active_frame()
+        self.stategraph.tick()
+
+        # Set Image
+
+        self.rotation = -(mousepos - self.position).as_polar()[1]
+        self.image = pygame.transform.rotate(self.stategraph.activeFrame, self.rotation)
+        self.rect = self.image.get_rect()
 
         # Movement
         mx = 1 if keys[3] else -1 if keys[1] else 0
@@ -83,16 +122,18 @@ class Player(pygame.sprite.Sprite):
 
         if mx != 0 or my != 0:
             mv = pygame.Vector2(mx, my).normalize() * self.speed
+            if keys[4]:
+                mv *= 1.7
             self.position += mv
 
             if self.moving == False:
                 #self.feet.add(self.groups()[0])
-                self.feet.visible = True
+                self.feet.set_visible(True)
             self.moving = True
         else:
             if self.moving == True:
                 #self.feet.kill()
-                self.feet.visible = False
+                self.feet.set_visible(False)
             self.moving = False
 
         # Positioning
@@ -104,10 +145,12 @@ class Player(pygame.sprite.Sprite):
         
 def createplayer(scale) -> Player:
     img = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\girl1.png").convert_alpha(), scale)
+    attack = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\attack.png").convert_alpha(), scale)
     feet = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\leg2.png").convert_alpha(), scale / 1.5)
 
-    sheet = ( ImageBase(img, (2, 0), 25), ImageBase(feet, (0, 0), 21) )
+    sheet = ( ImageBase(img, (2, 0), 25), ImageBase(feet, (0, 0), 21), ImageBase(attack, (3, 0), 2) )
     char = Player(sheet)
-    char.speed = 1
+    char.speed = 3
+    char.position = pygame.Vector2(500, 500)
 
     return char

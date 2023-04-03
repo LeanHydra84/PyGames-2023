@@ -12,8 +12,7 @@ class Feet(pygame.sprite.Sprite):
 
         self.frametick = 0
         self.frametimer = base.speed
-
-        self.visible = True
+        self.layer_group = None
 
     def flip_base(self):
         self.image_base = pygame.transform.flip(self.image_base, True, False)

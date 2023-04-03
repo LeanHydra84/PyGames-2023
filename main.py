@@ -20,14 +20,14 @@ def main():
 
     running = True
 
-    keys = [False, False, False, False]
+    keys = [False, False, False, False, False]
 
     char = player.createplayer(5)
 
     layers = LayerManager()
     layers.add(map.group, "Map")
     layers.add_new("Character").add(char)
-    layers.add_new("Legs").add(char.feet)
+    char.feet.add(layers.add_new("Legs"))
 
     while running:
         
@@ -49,6 +49,8 @@ def main():
                     keys[2] = True
                 elif event.key == pygame.K_d:
                     keys[3] = True
+                elif event.key == pygame.K_LSHIFT:
+                    keys[4] = True
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w:
@@ -59,6 +61,11 @@ def main():
                     keys[2] = False
                 elif event.key == pygame.K_d:
                     keys[3] = False
+                elif event.key == pygame.K_LSHIFT:
+                    keys[4] = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                char.attack_pressed()
 
         # Update
 
