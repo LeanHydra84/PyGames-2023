@@ -84,7 +84,7 @@ def check_collider(collider: pygame.Surface, point: list[int]) -> bool:
 
     colrect = collider.get_rect()
     if point[0] < colrect.w and point[0] >= 0 and point[1] < colrect.h and point[1] >= 0:
-        if collider.get_at(point) == pygame.Color(255, 255, 255, 255):
+        if collider.get_at(point).r == 255:
             return True
         return False
     return True
