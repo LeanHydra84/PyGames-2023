@@ -80,6 +80,14 @@ class StateGraph:
             self.increment_frames()
             self.calculate_active_frame()
         
+def check_collider(collider: pygame.Surface, point: list[int]) -> bool:
+
+    colrect = collider.get_rect()
+    if point[0] < colrect.w and point[0] >= 0 and point[1] < colrect.h and point[1] >= 0:
+        if collider.get_at(point) == pygame.Color(255, 255, 255, 255):
+            return True
+        return False
+    return True
     
 
 class Player(pygame.sprite.Sprite):
@@ -105,7 +113,7 @@ class Player(pygame.sprite.Sprite):
         if self.stategraph.state() == 0:
             self.stategraph.force_state(1)
 
-    def update(self, keys, mousepos : pygame.Vector2):
+    def update(self, keys, mousepos : pygame.Vector2, map):
         
         # Animation
         self.stategraph.tick()
@@ -114,7 +122,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rotation = -(mousepos - self.position).as_polar()[1]
         self.image = pygame.transform.rotate(self.stategraph.activeFrame, self.rotation)
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(center=self.position)
 
         # Movement
         mx = 1 if keys[3] else -1 if keys[1] else 0
@@ -124,7 +132,22 @@ class Player(pygame.sprite.Sprite):
             mv = pygame.Vector2(mx, my).normalize() * self.speed
             if keys[4]:
                 mv *= 1.7
-            self.position += mv
+
+            room = map.get_inside(self)
+            if room != None:
+                collider : pygame.Surface = room.collider
+                pixelindex = [int(self.position.x + mv.x - room.rect.x), int(self.position.y + mv.y - room.rect.y)]
+                colrect = collider.get_rect()
+
+                if check_collider(collider, pixelindex):
+                    self.position += mv
+                elif check_collider(collider, [int(self.position.x + mv.x - room.rect.x), int(self.position.y - room.rect.y)]):
+                    self.position.x += mv.x
+                elif check_collider(collider, [int(self.position.x - room.rect.x), int(self.position.y + mv.y - room.rect.y)]):
+                    self.position.y += mv.y
+
+            else:
+                self.position += mv
 
             if self.moving == False:
                 #self.feet.add(self.groups()[0])

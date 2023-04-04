@@ -63,7 +63,7 @@ class Character(pygame.sprite.Sprite):
             self.increment_frames()
             self.set_active_frame()
 
-    def update(self, movement, room):
+    def update(self, movement, map):
 
         self.update_frame_tick()
 
@@ -83,6 +83,7 @@ class Character(pygame.sprite.Sprite):
         if mx != 0 or my != 0:
             mv = pygame.Vector2(mx, my).normalize() * self.speed
             self.position += mv
+
             if self.moving != True:
                 self.moving = True
                 self.recalculate_imagebase()
@@ -97,6 +98,8 @@ class Character(pygame.sprite.Sprite):
             self.right = False
 
         # Positioning
+
+
         self.rect.x = self.position.x
         self.rect.y = self.position.y
 

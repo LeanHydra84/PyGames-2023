@@ -84,6 +84,12 @@ class Map:
         
         pass
 
+    def get_inside(self, sprite : pygame.sprite.Sprite):
+        collist = pygame.sprite.spritecollide(sprite, self.group, False)
+        if len(collist) > 0:
+            return collist[0]
+        return None
+
     def create_rooms(self):
         roomCollection = read_json(json_path)
         required = [RoomArchetype(p) for p in roomCollection["requiredrooms"]]

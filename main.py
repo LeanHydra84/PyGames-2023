@@ -12,6 +12,7 @@ def main():
     pygame.init()
     
     screen = pygame.display.set_mode(SCREENSIZE)
+    pygame.display.set_caption("School Game")
     clock = pygame.time.Clock()
 
     room_creator.room_scale = 5
@@ -69,7 +70,7 @@ def main():
 
         # Update
 
-        char.update(keys, pygame.Vector2(pygame.mouse.get_pos()))
+        char.update(keys, pygame.Vector2(pygame.mouse.get_pos()), map)
 
         # Draw
 
