@@ -49,27 +49,21 @@ class Player(pygame.sprite.Sprite):
 
             room = map.get_inside(self)
             if room != None:
-                collider : pygame.Surface = room.collider
-                pixelindex = [int(self.position.x + mv.x - room.rect.x), int(self.position.y + mv.y - room.rect.y)]
-                colrect = collider.get_rect()
-
-                if graph.check_collider(collider, pixelindex):
+                if graph.check_collider(room,   [int(self.position.x + mv.x), int(self.position.y + mv.y)]):
                     self.position += mv
-                elif graph.check_collider(collider, [int(self.position.x + mv.x - room.rect.x), int(self.position.y - room.rect.y)]):
+                elif graph.check_collider(room, [int(self.position.x + mv.x), int(self.position.y)]):
                     self.position.x += mv.x
-                elif graph.check_collider(collider, [int(self.position.x - room.rect.x), int(self.position.y + mv.y - room.rect.y)]):
+                elif graph.check_collider(room, [int(self.position.x), int(self.position.y + mv.y)]):
                     self.position.y += mv.y
 
             else:
                 self.position += mv
 
             if self.moving == False:
-                #self.feet.add(self.groups()[0])
                 self.feet.set_visible(True)
             self.moving = True
         else:
             if self.moving == True:
-                #self.feet.kill()
                 self.feet.set_visible(False)
             self.moving = False
 

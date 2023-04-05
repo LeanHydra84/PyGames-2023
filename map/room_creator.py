@@ -87,7 +87,7 @@ class Map:
     def get_inside(self, sprite : pygame.sprite.Sprite):
         collist = pygame.sprite.spritecollide(sprite, self.group, False)
         if len(collist) > 0:
-            return collist[0]
+            return collist
         return None
 
     def create_rooms(self):

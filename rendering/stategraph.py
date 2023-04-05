@@ -79,12 +79,13 @@ class StateGraph:
             self.increment_frames()
             self.calculate_active_frame()
         
-def check_collider(collider: pygame.Surface, point: list[int]) -> bool:
+def check_collider(room, point: list[int]) -> bool:
 
-    colrect = collider.get_rect()
-    if point[0] < colrect.w and point[0] >= 0 and point[1] < colrect.h and point[1] >= 0:
-        if collider.get_at(point).r == 255:
-            return True
-        return False
+    for col in room:
+        collider = col.collider
+        colrect = col.rect
+        adjP = (point[0] - colrect.x, point[1] - colrect.y)
+        if adjP[0] < colrect.w and adjP[0] >= 0 and adjP[1] < colrect.h and adjP[1] >= 0:
+            if collider.get_at(adjP).r != 255:
+                return False
     return True
-    
