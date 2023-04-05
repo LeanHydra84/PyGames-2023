@@ -63,6 +63,11 @@ def main():
                     pauseMenu.togglecapture()
                     state.togglepause()
 
+                if event.key == pygame.K_e:
+                    # Interact
+                    
+                    pass
+
                 if event.key == pygame.K_j:
                     print("Test")
                     text.read("Lorem ipsum test string\nHere is line two swag here we go")
