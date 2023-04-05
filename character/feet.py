@@ -1,5 +1,4 @@
 import pygame
-import player
 
 class Feet(pygame.sprite.Sprite):
     def __init__(self, parent, base):

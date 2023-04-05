@@ -1,27 +1,42 @@
 import pygame
-import room_creator
-import player
+import map.room_creator as room_creator
+import character.player as player
 
-from layerManager import LayerManager
+from rendering.layerManager import LayerManager
+from capture.menu import build_pause_menu
+from capture.textbox import Textbox
 
 SCREENSIZE = (1280, 720)
-
 backgroundColor = pygame.Color(100, 100, 100, 255)
+
+class State: # Gamestate handler for all things gaming
+    def __init__(self):
+        self.paused = False
+        self.keys = [False, False, False, False, False]
+        self.running = True
+        self.captureState = None
+
+    def quit(self):
+        self.running = False
+    def pause(self):
+        self.paused = True
+    def unpause(self):
+        self.paused = False
+    def togglepause(self):
+        self.paused = not self.paused
 
 def main():
     pygame.init()
     
-    screen = pygame.display.set_mode(SCREENSIZE)
-    pygame.display.set_caption("School Game")
-    clock = pygame.time.Clock()
+    state = State()
 
-    room_creator.room_scale = 5
+    screen = pygame.display.set_mode(SCREENSIZE)
+    clock = pygame.time.Clock()
+    pygame.display.set_caption("School Game")
+
+    room_creator.room_scale = 6
     map = room_creator.Map()
     map.create_rooms()
-
-    running = True
-
-    keys = [False, False, False, False, False]
 
     char = player.createplayer(5)
 
@@ -29,18 +44,32 @@ def main():
     layers.add(map.group, "Map")
     layers.add_new("Character").add(char)
     char.feet.add(layers.add_new("Legs"))
+    layers.add_new("Text")
 
-    while running:
+    pauseMenu = build_pause_menu(state)
+    text = Textbox(state)
+
+    keys = state.keys
+    while state.running:
         
         for event in pygame.event.get():
 
             # Process Events
             if event.type == pygame.QUIT:
-                running = False
+                state.running = False
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    running = False
+                    pauseMenu.togglecapture()
+                    state.togglepause()
+
+                if event.key == pygame.K_j:
+                    print("Test")
+                    text.read("Lorem ipsum test string\nHere is line two swag here we go")
+                    text.togglecapture()
+                    state.pause()
+
+
                 
                 if event.key == pygame.K_w:
                     keys[0] = True
@@ -54,6 +83,7 @@ def main():
                     keys[4] = True
 
             if event.type == pygame.KEYUP:
+                keys = state.keys
                 if event.key == pygame.K_w:
                     keys[0] = False
                 elif event.key == pygame.K_a:
@@ -66,17 +96,24 @@ def main():
                     keys[4] = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                char.attack_pressed()
+                if state.captureState != None:
+                    state.captureState.register_click(pygame.mouse.get_pos())
+                else:
+                    char.attack_pressed()
 
         # Update
-
-        char.update(keys, pygame.Vector2(pygame.mouse.get_pos()), map)
+        if not state.paused:
+            char.update(state, pygame.Vector2(pygame.mouse.get_pos()), map)
+            # update enemies, etc
 
         # Draw
-
         screen.fill(backgroundColor)
+        layers.render(screen)
 
-        layers.render(screen)        
+        if state.captureState != None:
+            state.captureState.update()
+            state.captureState.render(screen)
+
 
         clock.tick(60)
         pygame.display.flip()

@@ -1,8 +1,9 @@
 import pygame
-import feet
-import math
+import character.feet as feet
 
-from character import ImageBase
+from collections import namedtuple
+
+ImageBase = namedtuple('ImageBase', 'img dimension speed')
 
 class StateGraph:
     def __init__(self, sheets):
@@ -94,7 +95,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, sheet: tuple[ImageBase]):
         pygame.sprite.Sprite.__init__(self)
 
-        # Persistent Data (Sprites that do not change)
+        # Persistent Data References
         self.sheet = sheet
         self.stategraph = StateGraph(sheet)
         self.feet = feet.Feet(self, sheet[1])
@@ -113,7 +114,7 @@ class Player(pygame.sprite.Sprite):
         if self.stategraph.state() == 0:
             self.stategraph.force_state(1)
 
-    def update(self, keys, mousepos : pygame.Vector2, map):
+    def update(self, state, mousepos : pygame.Vector2, map):
         
         # Animation
         self.stategraph.tick()
@@ -125,12 +126,12 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.position)
 
         # Movement
-        mx = 1 if keys[3] else -1 if keys[1] else 0
-        my = 1 if keys[2] else -1 if keys[0] else 0
+        mx = 1 if state.keys[3] else -1 if state.keys[1] else 0
+        my = 1 if state.keys[2] else -1 if state.keys[0] else 0
 
         if mx != 0 or my != 0:
             mv = pygame.Vector2(mx, my).normalize() * self.speed
-            if keys[4]:
+            if state.keys[4]:
                 mv *= 1.7
 
             room = map.get_inside(self)
