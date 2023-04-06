@@ -3,6 +3,8 @@ from collections import namedtuple
 
 ImageBase = namedtuple('ImageBase', 'img dimension speed')
 
+# Consider optimizing the frames using SubSurfaces instead of blit copies
+
 class StateGraph:
     def __init__(self, sheets):
 
@@ -34,6 +36,7 @@ class StateGraph:
         self.sheetdim = dim
         self.frametickspeed = self.states[self._state].speed
         self.rect = pygame.Rect(0, 0, rect.w / (dim[0] + 1), rect.h / (dim[1] + 1))
+
         self.activeFrame = pygame.Surface(self.rect.size, pygame.SRCALPHA)
 
     def state(self):

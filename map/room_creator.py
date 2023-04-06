@@ -102,6 +102,6 @@ class Map:
         cur = None
         for p in plist:
             pos = PositioningInfo((p[0], p[1]), rand.randrange(0, 4, 1))
-            newroom = RoomActual(required[0], pos)
+            newroom = RoomActual(rand.choice(required), pos)
             self.rooms.append(newroom)
             self.group.add(newroom)

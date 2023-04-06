@@ -1,6 +1,7 @@
 import pygame
 import map.room_creator as room_creator
 import character.player as player
+import character.enemy as enemy
 
 from rendering.layerManager import LayerManager
 from capture.menu import build_pause_menu
@@ -34,16 +35,22 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("School Game")
 
-    room_creator.room_scale = 6
+    room_creator.room_scale = 7
     map = room_creator.Map()
     map.create_rooms()
 
     char = player.createplayer(5)
+    enemy1 = enemy.create_enemy_hallmonitor_test(5)
 
     layers = LayerManager()
     layers.add(map.group, "Map")
+
     layers.add_new("Character").add(char)
+    layers.find("Character").layer.add(enemy)
+
     char.feet.add(layers.add_new("Legs"))
+    enemy.feet.add(layers.find("Legs").layer)
+
     layers.add_new("Text")
 
     pauseMenu = build_pause_menu(state)
