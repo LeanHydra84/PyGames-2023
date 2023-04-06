@@ -1,10 +1,11 @@
 import pygame
 
 class Feet(pygame.sprite.Sprite):
-    def __init__(self, parent, base):
+    def __init__(self, parent, resource):
         pygame.sprite.Sprite.__init__(self)
         self.parent = parent
 
+        base = resource.states[0]
         self.image_base = base.img
         self.image = self.image_base
         self.rect = self.image_base.get_rect()

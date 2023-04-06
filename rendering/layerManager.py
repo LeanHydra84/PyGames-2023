@@ -30,6 +30,12 @@ class LayerManager:
         self.layers.append( layertype( newgroup, name ) )
         return newgroup
 
+    def add_to(self, name: str, obj: pygame.sprite.Sprite):
+        group = self.find(name)
+        if group == None:
+            group = self.add_new(name)
+        obj.add(group.layer)
+
     def remove(self, groupname: str):
         self.layers = list(filter(lambda x: x[1] != groupname, self.layers))
 
@@ -41,7 +47,6 @@ class LayerManager:
             if x.name == name:
                 return x
         return None
-    
 
     def render(self, screen):
         for l in self.layers:

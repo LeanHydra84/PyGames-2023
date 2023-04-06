@@ -1,0 +1,14 @@
+[
+    {
+        "path": "assets\\shespriteonmy\\girl1.png",
+        "dim": [2, 0],
+        "frames": 25,
+        "transition": 0
+    },
+    {
+        "path": "assets\\shespriteonmy\\attack.png",
+        "dim": [3, 0],
+        "frames": 2,
+        "transition": 0
+    }
+]

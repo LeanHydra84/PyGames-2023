@@ -1,7 +1,8 @@
 import pygame
 import map.room_creator as room_creator
-import character.player as player
-import character.enemy as enemy
+from character.player import Player
+from character.enemy import HallMonitor
+import rendering.resources as resources
 
 from rendering.layerManager import LayerManager
 from capture.menu import build_pause_menu
@@ -39,19 +40,23 @@ def main():
     map = room_creator.Map()
     map.create_rooms()
 
-    char = player.createplayer(5)
-    enemy1 = enemy.create_enemy_hallmonitor_test(5)
+    RESOURCES = resources.GlobalResources(5)
+    RESOURCES.load()
+
+    char = Player(RESOURCES.PLAYER, RESOURCES.FEET)
+    enemy1 = HallMonitor(RESOURCES.HALLMONITOR, RESOURCES.FEET)
 
     layers = LayerManager()
+
     layers.add(map.group, "Map")
+    layers.add_new("Feet")
+    layers.add_new("Character")
 
-    layers.add_new("Character").add(char)
-    layers.find("Character").layer.add(enemy)
+    layers.add_to("Character", char)
+    layers.add_to("Character", enemy1)
 
-    char.feet.add(layers.add_new("Legs"))
-    enemy.feet.add(layers.find("Legs").layer)
-
-    layers.add_new("Text")
+    layers.add_to("Feet", char.feet)
+    layers.add_to("Feet", enemy1.feet)
 
     pauseMenu = build_pause_menu(state)
     text = Textbox(state)
@@ -116,6 +121,8 @@ def main():
         # Update
         if not state.paused:
             char.update(state, pygame.Vector2(pygame.mouse.get_pos()), map)
+            # TEMP
+            enemy1.update()
             # update enemies, etc
 
         # Draw

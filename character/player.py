@@ -5,22 +5,21 @@ import character.feet as feet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, sheet: tuple[graph.ImageBase]):
+    def __init__(self, sheet, rsFeet):
         pygame.sprite.Sprite.__init__(self)
 
         # Persistent Data References
-        self.sheet = sheet
         self.stategraph = graph.StateGraph(sheet)
-        self.feet = feet.Feet(self, sheet[1])
+        self.feet = feet.Feet(self, rsFeet)
 
         # Sprite draw data -- NOT PERSISTENT --
         self.image : pygame.Surface = None
         self.rect : pygame.Rect = None
 
         # Movement
-        self.position = pygame.Vector2()
+        self.position = pygame.Vector2(500, 500)
         self.rotation = 0
-        self.speed = 1
+        self.speed = 3
         self.moving = False
 
     def attack_pressed(self):
@@ -73,7 +72,7 @@ class Player(pygame.sprite.Sprite):
         
 
 
-        
+# DEPRECATED
 def createplayer(scale) -> Player:
     img = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\girl1.png").convert_alpha(), scale)
     attack = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\attack.png").convert_alpha(), scale)

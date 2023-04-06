@@ -1,29 +1,16 @@
 import pygame
-from collections import namedtuple
-
-ImageBase = namedtuple('ImageBase', 'img dimension speed')
+import rendering.animation_set
+from rendering.animation_set import ImageBase
 
 # Consider optimizing the frames using SubSurfaces instead of blit copies
 
 class StateGraph:
-    def __init__(self, sheets):
+    def __init__(self, animationset: rendering.animation_set.AnimationGraph):
 
-        self.sheet = sheets
-        self.states : list[ImageBase] = []
-        self.transfergraph = []
+        self.states:  list[ImageBase] = animationset.states
+        self.transfergraph: list[int] = animationset.transitions
 
         self._state = 0
-
-        # TEST CODE
-
-        self.states.append(sheets[0])
-        self.states.append(sheets[2])
-
-        self.transfergraph.append(0)
-        self.transfergraph.append(0)
-
-        # END TEST CODE
-
         self.curframe = [0, 0]
         self.frametick = 0
         self.setup_surface()

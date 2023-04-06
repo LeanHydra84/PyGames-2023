@@ -3,12 +3,11 @@ import rendering.stategraph as graph
 import character.feet as feet
 
 class HallMonitor(pygame.sprite.Sprite):
-    def __init__(self, resources):
+    def __init__(self, resources, rsFeet):
         pygame.sprite.Sprite.__init__(self)
         
-        
         self.graph = graph.StateGraph(resources)
-        self.feet = feet.Feet(self, resources[1])
+        self.feet = feet.Feet(self, rsFeet)
 
         self.image: pygame.Surface = None
         self.rect: pygame.Rect = None
@@ -36,6 +35,7 @@ class HallMonitor(pygame.sprite.Sprite):
         self.rect.x = self.position.x
         self.rect.y = self.position.y
         
+# DEPRECATED
 def create_enemy_hallmonitor_test(scale):
     idle = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\hallmonitor1.png"), scale)
     feet = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\leg2.png").convert_alpha(), scale / 1.5)
