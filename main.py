@@ -78,7 +78,7 @@ def main():
     for i in range(10):
         init_enemy(layers, state)
 
-    pauseMenu = build_pause_menu(state)
+    pauseMenu = build_pause_menu(state, 5)
     text = Textbox(state)
 
     keys = state.keys
@@ -153,7 +153,6 @@ def main():
 
         clock.tick(60)
         pygame.display.flip()
-
 
 
 if __name__ == "__main__":

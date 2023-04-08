@@ -22,8 +22,15 @@ class OverlayMenu(capturestate.CaptureState):
         capturestate.CaptureState.__init__(self, state)
 
         self.multColor = pygame.Color(100, 100, 100, 255)
+
         self.group = pygame.sprite.Group()
+
+        self.blinkstate = False
+        self.static_blink_frame = 0
+        self.static_blink_time = 40
+
         self.buttons = []
+        self.blink = []
 
     def get_onclick(self, pos):
         for sprite in self.buttons:
@@ -49,26 +56,52 @@ class OverlayMenu(capturestate.CaptureState):
         clicked[1]()
         
 
-    def add_static(self, sprite):
+    def add_static(self, sprite, doesblink = False):
         self.group.add(sprite)
+        if doesblink:
+            self.blink.append(sprite)
 
     def add_button(self, sprite, behavior):
         self.buttons.append((sprite, behavior))
         self.group.add(sprite)
 
-def build_pause_menu(state_object) -> OverlayMenu:
+    def invert_blink_state(self):
+        self.blinkstate = not self.blinkstate
+        for x in self.blink:
+            if self.blinkstate:
+                x.kill()
+            else:
+                self.group.add(x)
+
+    def update(self):
+        self.static_blink_frame += 1
+        if self.static_blink_frame >= self.static_blink_time:
+            self.static_blink_frame = 0
+            self.invert_blink_state()
+
+def build_pause_menu(state_object, btnScale) -> OverlayMenu:
 
     menu = OverlayMenu(state_object)
     menu.multColor = pygame.Color(100, 100, 200, 255)
+
+    headerIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu_test\\header.png").convert_alpha(), btnScale)
+    header = pygame.sprite.Sprite()
+    header.image = headerIMG
+    header.rect = headerIMG.get_rect()
+    header.rect.centerx = 640
+    header.rect.y = 25
+    menu.add_static(header, True)
     
-    resume = MenuButton(pygame.image.load("assets\\menu_test\\resume_sprite.png").convert_alpha())
+    resumeIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu_test\\play.png").convert_alpha(), btnScale)
+    resume = MenuButton(resumeIMG)
     resume.hoverColor = pygame.Color(50, 200, 100, 255)
-    resume.rect.topleft = (100, 100)
+    resume.rect.topleft = (100, 300)
     menu.add_button(resume, lambda: (menu.togglecapture(), state_object.unpause()))
 
-    quit = MenuButton(pygame.image.load("assets\\menu_test\\quit_sprite.png").convert_alpha())
+    quitIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu_test\\stop.png").convert_alpha(), btnScale)
+    quit = MenuButton(quitIMG)
     quit.hoverColor = pygame.Color(200, 50, 100, 255)
-    quit.rect.topleft = (100, 200)
+    quit.rect.topleft = (100, 450)
     menu.add_button(quit, state_object.quit)
 
     return menu

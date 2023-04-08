@@ -127,7 +127,7 @@ class MultilineWritingTextObject(pygame.sprite.Sprite):
             
             self.compile()
 
-            if self.is_complete():
+            if self.is_complete() and self.callback != None:
                 self.callback()
 
 
