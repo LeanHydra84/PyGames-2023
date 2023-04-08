@@ -3,7 +3,7 @@ import rendering.stategraph as graph
 import character.feet as feet
 
 class HallMonitor(pygame.sprite.Sprite):
-    def __init__(self, resources, rsFeet):
+    def __init__(self, resources, rsFeet, state):
         pygame.sprite.Sprite.__init__(self)
         
         self.graph = graph.StateGraph(resources)
@@ -19,7 +19,7 @@ class HallMonitor(pygame.sprite.Sprite):
 
         pass
 
-    def update(self):
+    def update(self, state):
         
         # Animate
         self.graph.tick()

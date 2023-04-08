@@ -26,13 +26,14 @@ class Player(pygame.sprite.Sprite):
         if self.stategraph.state() == 0:
             self.stategraph.force_state(1)
 
-    def update(self, state, mousepos : pygame.Vector2, map):
+    def update(self, state):
         
         # Animation
         self.stategraph.tick()
 
         # Set Image
 
+        mousepos = pygame.mouse.get_pos()
         self.rotation = -(mousepos - self.position).as_polar()[1]
         self.image = pygame.transform.rotate(self.stategraph.activeFrame, self.rotation)
         self.rect = self.image.get_rect(center=self.position)
@@ -46,7 +47,7 @@ class Player(pygame.sprite.Sprite):
             if state.keys[4]:
                 mv *= 1.7
 
-            room = map.get_inside(self)
+            room = state.map.get_inside(self)
             if room != None:
                 if graph.check_collider(room,   [int(self.position.x + mv.x), int(self.position.y + mv.y)]):
                     self.position += mv

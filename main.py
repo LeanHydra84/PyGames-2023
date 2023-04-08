@@ -37,25 +37,30 @@ def main():
     pygame.display.set_caption("School Game")
 
     room_creator.room_scale = 7
-    map = room_creator.Map()
-    map.create_rooms()
 
-    RESOURCES = resources.GlobalResources(5)
-    RESOURCES.load()
+    state.map = room_creator.Map()
+    state.map.create_rooms()
 
-    char = Player(RESOURCES.PLAYER, RESOURCES.FEET)
-    enemy1 = HallMonitor(RESOURCES.HALLMONITOR, RESOURCES.FEET)
+    state.RESOURCES = resources.GlobalResources(5)
+    state.RESOURCES.load()
+
+    state.player = Player(state.RESOURCES.PLAYER, state.RESOURCES.FEET)
+
+    enemy1 = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
 
     layers = LayerManager()
 
-    layers.add(map.group, "Map")
+    layers.add(state.map.group, "Map")
+
+    layers.add_new("Pickups")
     layers.add_new("Feet")
+    layers.add_new("Enemies")
     layers.add_new("Character")
 
-    layers.add_to("Character", char)
-    layers.add_to("Character", enemy1)
+    layers.add_to("Character", state.player)
+    layers.add_to("Enemies", enemy1)
 
-    layers.add_to("Feet", char.feet)
+    layers.add_to("Feet", state.player.feet)
     layers.add_to("Feet", enemy1.feet)
 
     pauseMenu = build_pause_menu(state)
@@ -116,13 +121,11 @@ def main():
                 if state.captureState != None:
                     state.captureState.register_click(pygame.mouse.get_pos())
                 else:
-                    char.attack_pressed()
+                    state.player.attack_pressed()
 
         # Update
         if not state.paused:
-            char.update(state, pygame.Vector2(pygame.mouse.get_pos()), map)
-            # TEMP
-            enemy1.update()
+            layers.update(state)
             # update enemies, etc
 
         # Draw

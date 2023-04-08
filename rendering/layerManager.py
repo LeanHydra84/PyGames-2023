@@ -51,3 +51,7 @@ class LayerManager:
     def render(self, screen):
         for l in self.layers:
             l.layer.draw(screen)
+
+    def update(self, state):
+        for layer in self.layers:
+            layer.layer.update(state)
