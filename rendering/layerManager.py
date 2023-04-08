@@ -1,7 +1,7 @@
 import pygame
 from collections import namedtuple
 
-layertype = namedtuple("Layer", "layer name")
+layertype = namedtuple("Layer", "layer name doupdate")
 
 # Add support for update() function
 """
@@ -21,13 +21,13 @@ class LayerManager:
     def __init__(self):
         self.layers : list[layertype] = []
 
-    def add(self, group: pygame.sprite.Group, name: str):
-        self.layers.append( layertype(group, name) )
+    def add(self, group: pygame.sprite.Group, name: str, doUpdate: bool = False):
+        self.layers.append( layertype(group, name, doUpdate) )
         return group
 
-    def add_new(self, name: str):
+    def add_new(self, name: str, doUpdate: bool = False):
         newgroup = pygame.sprite.Group()
-        self.layers.append( layertype( newgroup, name ) )
+        self.layers.append( layertype( newgroup, name, doUpdate ) )
         return newgroup
 
     def add_to(self, name: str, obj: pygame.sprite.Sprite):
@@ -54,4 +54,5 @@ class LayerManager:
 
     def update(self, state):
         for layer in self.layers:
-            layer.layer.update(state)
+            if layer.doupdate:
+                layer.layer.update(state)

@@ -5,7 +5,7 @@ from rendering.animation_set import ImageBase
 # Consider optimizing the frames using SubSurfaces instead of blit copies
 
 class StateGraph:
-    def __init__(self, animationset: rendering.animation_set.AnimationGraph):
+    def __init__(self, animationset: rendering.animation_set.AnimationCollection):
 
         self.states:  list[ImageBase] = animationset.states
         self.transfergraph: list[int] = animationset.transitions

@@ -4,7 +4,7 @@ from collections import namedtuple
 
 ImageBase = namedtuple('ImageBase', 'img dimension speed')
 
-class AnimationGraph:
+class AnimationCollection:
     def __init__(self, jsonPath: str, scale: float):
         decoder = json.decoder.JSONDecoder()
 

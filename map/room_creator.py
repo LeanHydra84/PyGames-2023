@@ -84,6 +84,16 @@ class Map:
         
         pass
 
+    def get_collision_at_point(self, point) -> bool:
+        for x in self.group:
+            if x.rect.collidepoint(point):
+                col: pygame.Surface = x.collider
+                color = col.get_at( (int(point.x - x.rect.x), int(point.y - x.rect.y)) )
+                if color.r == 255:
+                    return True
+                return False
+        return True
+
     def get_inside(self, sprite : pygame.sprite.Sprite):
         collist = pygame.sprite.spritecollide(sprite, self.group, False)
         if len(collist) > 0:

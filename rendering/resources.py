@@ -1,4 +1,4 @@
-from rendering.animation_set import AnimationGraph
+from rendering.animation_set import AnimationCollection
 
 class GlobalResources:
     def __init__(self, scale):
@@ -6,9 +6,9 @@ class GlobalResources:
 
     def load(self):
 
-        self.PLAYER = AnimationGraph("assets\\player.json", self.scale)
-        self.HALLMONITOR = AnimationGraph("assets\\hallmonitor.json", self.scale)
-        self.FEET = AnimationGraph("assets\\feet.json", self.scale)
+        self.PLAYER = AnimationCollection("assets\\player.json", self.scale)
+        self.HALLMONITOR = AnimationCollection("assets\\hallmonitor.json", self.scale)
+        self.FEET = AnimationCollection("assets\\feet.json", self.scale)
 
     def release(self):
         del self.PLAYER

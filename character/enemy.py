@@ -2,6 +2,9 @@ import pygame
 import rendering.stategraph as graph
 import character.feet as feet
 
+detectRange = 450**2
+splits = 32
+
 class HallMonitor(pygame.sprite.Sprite):
     def __init__(self, resources, rsFeet, state):
         pygame.sprite.Sprite.__init__(self)
@@ -12,13 +15,27 @@ class HallMonitor(pygame.sprite.Sprite):
         self.image: pygame.Surface = None
         self.rect: pygame.Rect = None
 
+        self.speed = 2.1
+
         self.rotation = 0
-        self.position = pygame.Vector2(0, 0)
+        self.position = pygame.Vector2(100, 100)
 
-    def ai_tick(self):
+    # Suuuuper hacky line-of-sight pathing. Checks n (n=splits) points along line between self and player for colliders
+    def can_see_point(self, point: pygame.Vector2, map) -> bool:
+        direction = (point - self.position).normalize() * (self.position.distance_to(point) / splits)
+        for i in range(splits - 1):
+            if not map.get_collision_at_point(self.position + i * direction):
+                return False
+        return True
 
-        pass
+    def ai_tick(self, state):
+        targetPos: pygame.Vector2 = state.player.position
 
+        if self.position.distance_squared_to(targetPos) < detectRange and self.can_see_point(targetPos, state.map):
+            mov = (targetPos - self.position).normalize()
+            self.position += mov * self.speed
+            self.rotation = -(targetPos - self.position).as_polar()[1]
+        
     def update(self, state):
         
         # Animate
@@ -29,11 +46,10 @@ class HallMonitor(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         # AI TICK
-        self.ai_tick()
+        self.ai_tick(state)
 
         # Position
-        self.rect.x = self.position.x
-        self.rect.y = self.position.y
+        self.rect.center = self.position
         
 # DEPRECATED
 def create_enemy_hallmonitor_test(scale):

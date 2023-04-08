@@ -8,6 +8,8 @@ from rendering.layerManager import LayerManager
 from capture.menu import build_pause_menu
 from capture.textbox import Textbox
 
+import random as rand
+
 SCREENSIZE = (1280, 720)
 backgroundColor = pygame.Color(100, 100, 100, 255)
 
@@ -27,12 +29,23 @@ class State: # Gamestate handler for all things gaming
     def togglepause(self):
         self.paused = not self.paused
 
+def init_enemy(layersObj, state):
+    pos = pygame.Vector2(rand.randint(0, SCREENSIZE[0]), rand.randint(0, SCREENSIZE[1]))
+    en = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
+    en.position = pos
+
+    layersObj.add_to("Enemies", en)
+    layersObj.add_to("Feet", en.feet)
+
 def main():
     pygame.init()
     
     state = State()
 
     screen = pygame.display.set_mode(SCREENSIZE)
+
+    state.DEBUGSCREEN = screen
+
     clock = pygame.time.Clock()
     pygame.display.set_caption("School Game")
 
@@ -46,22 +59,24 @@ def main():
 
     state.player = Player(state.RESOURCES.PLAYER, state.RESOURCES.FEET)
 
-    enemy1 = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
+    #enemy1 = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
 
     layers = LayerManager()
-
     layers.add(state.map.group, "Map")
 
-    layers.add_new("Pickups")
+    layers.add_new("Pickups", True)
     layers.add_new("Feet")
-    layers.add_new("Enemies")
-    layers.add_new("Character")
+    layers.add_new("Enemies", True)
+    layers.add_new("Character", True)
 
     layers.add_to("Character", state.player)
-    layers.add_to("Enemies", enemy1)
+    #layers.add_to("Enemies", enemy1)
 
     layers.add_to("Feet", state.player.feet)
-    layers.add_to("Feet", enemy1.feet)
+    #layers.add_to("Feet", enemy1.feet)
+
+    for i in range(10):
+        init_enemy(layers, state)
 
     pauseMenu = build_pause_menu(state)
     text = Textbox(state)
@@ -90,7 +105,6 @@ def main():
                     text.read("Lorem ipsum test string\nHere is line two swag here we go")
                     text.togglecapture()
                     state.pause()
-
 
                 
                 if event.key == pygame.K_w:
