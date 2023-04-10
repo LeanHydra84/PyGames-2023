@@ -114,6 +114,10 @@ class Player(pygame.sprite.Sprite):
         # Update position history
         self.history.append(self.position.copy())        
 
+    def kill(self):
+        super().kill()
+        self.feet.kill()
+
 
 # DEPRECATED
 def createplayer(scale) -> Player:

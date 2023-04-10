@@ -8,8 +8,12 @@ detectRange = 450**2
 reachedThreshold = 10**2 # Distance before target position is considered "reached"
 splits = 32
 
+# TODO: Market research these values
 forgetTime = 120
 spotTime = 45
+attackrange = 65**2
+attackTime = 12
+attackCooldown = 50
 
 # AI MODES
 class aimodes(Enum):
@@ -35,8 +39,12 @@ class HallMonitor(pygame.sprite.Sprite):
         self.rotation = 0
         self.position = pygame.Vector2(100, 100)
 
+        self.attackTimer = 0
+        self.attacking = False
+        self.cooldown = False
         self.spotTimer = 0
         self.aimode = aimodes.IDLE
+
 
         self.tracksheet = None
 
@@ -58,6 +66,9 @@ class HallMonitor(pygame.sprite.Sprite):
 
 
     def ai_tick(self, state):
+
+        if not state.player.alive():
+            return
 
         """
             TODO:
@@ -91,9 +102,13 @@ class HallMonitor(pygame.sprite.Sprite):
                 self.aimode = aimodes.IDLE
         
         elif self.aimode == aimodes.CHASING:
+            if self.position.distance_squared_to(state.player.position) < attackrange and not self.cooldown:
+                self.attacking = True
+
             if self.can_see_point(targetPos, state.map):
                 self.move_towards(targetPos, self.speed)
             else:
+                self.attackTimer = 0
                 self.aimode = aimodes.SEARCHING
                 self.spotTimer = 0
                 self.tracksheet = state.player.history.copy()
@@ -124,7 +139,36 @@ class HallMonitor(pygame.sprite.Sprite):
                 self.tracksheet = None
                 self.spotTimer = 0
             
-        
+    def attack(self, state):
+        self.graph.force_state(1)
+        self.attackTimer = 0
+
+        if self.position.distance_squared_to(state.player.position) < attackrange:
+            state.player.kill()
+            newspr = pygame.sprite.Sprite()
+            newspr.image = state.RESOURCES.DEADBODY_TESTSPRITE
+            newspr.rect = newspr.image.get_rect(center=state.player.position)
+            state.renderLayers.add_to("DeadBodies", newspr)
+            state.RESOURCES.SND_PUNCH.play()
+        else:
+            state.RESOURCES.SND_WHIFF.play()
+            
+    def attack_tick(self, state):
+
+        if self.cooldown:
+            self.attackTimer += 1
+            if self.attackTimer >= attackCooldown:
+                self.attackTimer = 0
+                self.cooldown = False
+                return
+
+        elif self.attacking:
+            self.attackTimer += 1
+            if self.attackTimer >= attackTime:
+                self.attackTimer = 0
+                self.attack(state)
+                self.attacking = False
+                self.cooldown = True
 
     def update(self, state):
         
@@ -137,6 +181,7 @@ class HallMonitor(pygame.sprite.Sprite):
 
         # AI TICK
         self.ai_tick(state)
+        self.attack_tick(state)
 
         # Position
         self.rect.center = self.position

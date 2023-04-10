@@ -34,6 +34,7 @@ def init_enemy(layersObj, state):
     pos = pygame.Vector2(rand.randint(0, state.screensize[0]), rand.randint(0, state.screensize[1]))
     en = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
     en.position = pos
+    en.rotation = rand.randrange(0, 360)
 
     layersObj.add_to("Enemies", en)
     layersObj.add_to("Feet", en.feet)
@@ -56,7 +57,7 @@ def main():
     room_creator.room_scale = 7
 
     state.map = room_creator.Map()
-    state.map.create_rooms()
+    #state.map.create_rooms()
 
     state.RESOURCES = resources.GlobalResources(5)
     state.RESOURCES.load()
