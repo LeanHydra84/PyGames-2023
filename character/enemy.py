@@ -59,6 +59,14 @@ class HallMonitor(pygame.sprite.Sprite):
 
     def ai_tick(self, state):
 
+        """
+            TODO:
+                this works pretty good,
+                but the ai actually follows a backwards path I think?? Like it copies the queue when the
+                most recent position is unseen, but all the positions behind that should have been seen because
+                it's adding them on top. so I don't know. Could be worth looking into, but if this works who cares.
+        """
+
         targetPos = state.player.position
         if self.position.distance_squared_to(targetPos) > detectRange:
             return
@@ -103,7 +111,6 @@ class HallMonitor(pygame.sprite.Sprite):
                     targetPos = self.tracksheet[0]
             
             self.move_towards(targetPos, self.speed)
-            print("Searching")
 
             if self.can_see_point(state.player.position, state.map):
                 self.aimode = aimodes.CHASING
@@ -116,23 +123,9 @@ class HallMonitor(pygame.sprite.Sprite):
                 self.aimode = aimodes.IDLE
                 self.tracksheet = None
                 self.spotTimer = 0
-                
-        return
-
-        # DEPRECATED CODE VVVVVV
+            
         
-        targetPos: pygame.Vector2 = state.player.position
 
-        if self.position.distance_squared_to(targetPos) < detectRange:
-
-            if self.can_see_point(targetPos, state.map):
-                self.move_towards(targetPos)
-                self.aimode = aimodes.FOLLOWING
-            elif self.aimode == aimodes.FOLLOWING:
-                self.aimode = aimodes.SEARCHING
-                self.tracksheet = state.player.history.copy()
-
-        
     def update(self, state):
         
         # Animate

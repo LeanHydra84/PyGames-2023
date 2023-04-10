@@ -25,9 +25,44 @@ class Player(pygame.sprite.Sprite):
 
         self.history = deque(maxlen=MAXTIME)
 
-    def attack_pressed(self):
+    def forward(self):
+        ward = pygame.Vector2.from_polar((1, self.rotation))
+        ward.y = -ward.y
+        return ward
+
+    def attack_pressed(self, state):
         if self.stategraph.state() == 0:
             self.stategraph.force_state(1)
+
+            enemygroup: pygame.sprite.Group = state.renderLayers.find("Enemies").layer
+            
+            attackRadius = 30
+            attackdist = 30
+
+            attackPos: pygame.Vector2 = self.position + (self.forward() * attackdist)
+
+            # Debug attack circle
+            #pygame.draw.circle(state.DEBUGSCREEN, (255, 0, 0), attackPos, attackRadius)
+
+            hitflag = False
+            for spr in enemygroup:
+                if attackPos.distance_squared_to(spr.position) < attackRadius**2:
+                    deadpos = spr.position
+                    spr.kill()
+
+                    newspr = pygame.sprite.Sprite()
+                    newspr.image = state.RESOURCES.DEADBODY_TESTSPRITE
+                    newspr.rect = newspr.image.get_rect(center=deadpos)
+
+                    state.renderLayers.add_to("DeadBodies", newspr)
+                    hitflag = True
+                
+            if hitflag:
+                state.RESOURCES.SND_PUNCH.play()
+            else:
+                state.RESOURCES.SND_WHIFF.play()
+
+
 
     def update(self, state):
         

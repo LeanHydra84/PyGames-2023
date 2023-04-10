@@ -40,7 +40,10 @@ def init_enemy(layersObj, state):
 
 def main():
     pygame.init()
+    pygame.mixer.init()
+
     
+
     state = State()
 
     screen = pygame.display.set_mode(state.screensize)
@@ -63,9 +66,11 @@ def main():
     #enemy1 = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
 
     layers = LayerManager()
+    state.renderLayers = layers
 
     layers.add(state.map.group, "Map")
 
+    layers.add_new("DeadBodies")
     layers.add_new("Pickups", True)
     layers.add_new("Feet")
     layers.add_new("Enemies", True)
@@ -134,13 +139,14 @@ def main():
                 if state.captureState != None:
                     state.captureState.register_click(pygame.mouse.get_pos())
                 else:
-                    state.player.attack_pressed()
+                    state.player.attack_pressed(state)
 
         # Update
         if not state.paused:
             layers.update(state)
             # update enemies, etc
 
+        
 
         # Draw
         screen.fill(backgroundColor)
