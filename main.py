@@ -10,15 +10,16 @@ from capture.textbox import Textbox
 
 import random as rand
 
-SCREENSIZE = (1280, 720)
 backgroundColor = pygame.Color(100, 100, 100, 255)
 
 class State: # Gamestate handler for all things gaming
     def __init__(self):
+        self.screensize = (1280, 720)
         self.paused = False
         self.keys = [False, False, False, False, False]
         self.running = True
         self.captureState = None
+        self.camPos = pygame.Vector2(0, 0)
 
     def quit(self):
         self.running = False
@@ -30,7 +31,7 @@ class State: # Gamestate handler for all things gaming
         self.paused = not self.paused
 
 def init_enemy(layersObj, state):
-    pos = pygame.Vector2(rand.randint(0, SCREENSIZE[0]), rand.randint(0, SCREENSIZE[1]))
+    pos = pygame.Vector2(rand.randint(0, state.screensize[0]), rand.randint(0, state.screensize[1]))
     en = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
     en.position = pos
 
@@ -42,7 +43,7 @@ def main():
     
     state = State()
 
-    screen = pygame.display.set_mode(SCREENSIZE)
+    screen = pygame.display.set_mode(state.screensize)
 
     state.DEBUGSCREEN = screen
 
@@ -62,6 +63,7 @@ def main():
     #enemy1 = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
 
     layers = LayerManager()
+
     layers.add(state.map.group, "Map")
 
     layers.add_new("Pickups", True)
@@ -70,10 +72,7 @@ def main():
     layers.add_new("Character", True)
 
     layers.add_to("Character", state.player)
-    #layers.add_to("Enemies", enemy1)
-
     layers.add_to("Feet", state.player.feet)
-    #layers.add_to("Feet", enemy1.feet)
 
     for i in range(10):
         init_enemy(layers, state)
@@ -141,6 +140,7 @@ def main():
         if not state.paused:
             layers.update(state)
             # update enemies, etc
+
 
         # Draw
         screen.fill(backgroundColor)

@@ -6,8 +6,6 @@ import numpy
 from scipy.spatial import Delaunay
 import matplotlib.pyplot as plt
 
-from main import SCREENSIZE
-
 room_scale = 1
 json_path = "assets\\rooms\\rooms.json"
 
@@ -17,7 +15,7 @@ def dist(a: list, b: list):
     return numpy.sqrt(x*x + y*y)
 
 def get_points_mindist(n, mindist):
-    plist = [[rand.randrange(0, SCREENSIZE[0], 25 * room_scale), rand.randrange(0, SCREENSIZE[1], 25 * room_scale)] for p in range(n)]
+    plist = [[rand.randrange(0, 1280, 25 * room_scale), rand.randrange(0, 720, 25 * room_scale)] for p in range(n)]
     return numpy.array([p for p in plist if all(dist(p, x) > mindist for x in plist if x != p)])
 
 def delauneytest(n, nmin, mindist):
@@ -51,8 +49,8 @@ class RoomArchetype:
         col = pygame.image.load(roomdetails["collider"]).convert()
         rect = low.get_rect()
         
-        self.image = pygame.transform.scale(low, (rect.w * room_scale, rect.h * room_scale))
-        self.collider = pygame.transform.scale(col, (rect.w * room_scale, rect.h * room_scale))
+        self.image = pygame.transform.scale_by(low, room_scale)
+        self.collider = pygame.transform.scale_by(col, room_scale)
         self.rect = self.image.get_rect()
 
         
@@ -71,8 +69,12 @@ class RoomActual(pygame.sprite.Sprite):
         
         # Doors, pickups, etc.
 
+        self.position = position.coord
         self.rect = self.image.get_rect(topleft=position.coord)
 
+    def update(self, state):
+        pass
+        #self.rect.topleft = self.position - state.camPos
 
 
 class Map:

@@ -2,7 +2,8 @@ import pygame
 import rendering.stategraph as graph
 import character.feet as feet
 
-
+from collections import deque
+MAXTIME = 5
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, sheet, rsFeet):
@@ -21,6 +22,8 @@ class Player(pygame.sprite.Sprite):
         self.rotation = 0
         self.speed = 3
         self.moving = False
+
+        self.history = deque(maxlen=MAXTIME)
 
     def attack_pressed(self):
         if self.stategraph.state() == 0:
@@ -68,9 +71,13 @@ class Player(pygame.sprite.Sprite):
             self.moving = False
 
         # Positioning
+        #state.camPos = self.position
+        
         self.rect.center = self.position
         self.feet.update()
-        
+
+        # Update position history
+        self.history.append(self.position.copy())        
 
 
 # DEPRECATED
