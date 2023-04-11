@@ -23,14 +23,14 @@ class Feet(pygame.sprite.Sprite):
         else:
             self.kill()
 
-    def update(self):
+    def update(self, position):
 
         # Rotate
         self.image = pygame.transform.rotate(self.image_base, self.parent.rotation)
         self.rect = self.image.get_rect()
 
         # Set position
-        self.rect.center = self.parent.position
+        self.rect.center = position
 
         # Animate feet motion
         if self.frametick >= self.frametimer:

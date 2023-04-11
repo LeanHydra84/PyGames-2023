@@ -69,10 +69,11 @@ class RoomActual(pygame.sprite.Sprite):
         
         # Doors, pickups, etc.
 
-        self.position = position.coord
+        self.position: pygame.Vector2 = position.coord
         self.rect = self.image.get_rect(topleft=position.coord)
 
     def update(self, state):
+        self.rect.topleft = self.position + state.camera
         pass
         #self.rect.topleft = self.position - state.camPos
 

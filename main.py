@@ -1,25 +1,30 @@
 import pygame
 import map.room_creator as room_creator
-from character.player import Player
-from character.enemy import HallMonitor
-import rendering.resources as resources
 
+from character.player import Player
+from character.hallmonitor import HallMonitor
+
+import rendering.resources as resources
 from rendering.layerManager import LayerManager
+from rendering.hueshift import HueShift
+
 from capture.menu import build_pause_menu
 from capture.textbox import Textbox
 
 import random as rand
 
-backgroundColor = pygame.Color(100, 100, 100, 255)
+lerpSpeed = 5/60
 
 class State: # Gamestate handler for all things gaming
     def __init__(self):
         self.screensize = (1280, 720)
+        self.centerScreen = (self.screensize[0] / 2, self.screensize[1] / 2)
         self.paused = False
         self.keys = [False, False, False, False, False]
         self.running = True
         self.captureState = None
-        self.camPos = pygame.Vector2(0, 0)
+
+        self.camera = pygame.Vector2(0, 0)
 
     def quit(self):
         self.running = False
@@ -43,12 +48,9 @@ def main():
     pygame.init()
     pygame.mixer.init()
 
-    
-
     state = State()
 
     screen = pygame.display.set_mode(state.screensize)
-
     state.DEBUGSCREEN = screen
 
     clock = pygame.time.Clock()
@@ -57,30 +59,31 @@ def main():
     room_creator.room_scale = 7
 
     state.map = room_creator.Map()
-    #state.map.create_rooms()
+    state.map.create_rooms()
 
     state.RESOURCES = resources.GlobalResources(5)
     state.RESOURCES.load()
 
     state.player = Player(state.RESOURCES.PLAYER, state.RESOURCES.FEET)
+    state.player.position = pygame.Vector2(state.screensize[0] / 2, state.screensize[1] / 2)
 
-    #enemy1 = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
+    hue = HueShift(pygame.Color(100, 25, 25), 1)
 
     layers = LayerManager()
     state.renderLayers = layers
 
-    layers.add(state.map.group, "Map")
+    layers.add(state.map.group, "Map", True)
 
-    layers.add_new("DeadBodies")
+    layers.add_new("DeadBodies", True)
     layers.add_new("Pickups", True)
-    layers.add_new("Feet")
     layers.add_new("Enemies", True)
     layers.add_new("Character", True)
+    layers.add_new("Feet")
 
     layers.add_to("Character", state.player)
     layers.add_to("Feet", state.player.feet)
 
-    for i in range(10):
+    for i in range(2):
         init_enemy(layers, state)
 
     pauseMenu = build_pause_menu(state, 5)
@@ -96,6 +99,7 @@ def main():
                 state.running = False
 
             if event.type == pygame.KEYDOWN:
+
                 if event.key == pygame.K_ESCAPE:
                     pauseMenu.togglecapture()
                     state.togglepause()
@@ -106,7 +110,6 @@ def main():
                     pass
 
                 if event.key == pygame.K_j:
-                    print("Test")
                     text.read("Lorem ipsum test string\nHere is line two swag here we go")
                     text.togglecapture()
                     state.pause()
@@ -139,7 +142,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if state.captureState != None:
                     state.captureState.register_click(pygame.mouse.get_pos())
-                else:
+                elif state.player.alive():
                     state.player.attack_pressed(state)
 
         # Update
@@ -147,10 +150,12 @@ def main():
             layers.update(state)
             # update enemies, etc
 
-        
+        hue.update()
+
+        state.camera = state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed)
 
         # Draw
-        screen.fill(backgroundColor)
+        screen.fill(hue.color())
         layers.render(screen)
 
         if state.captureState != None:

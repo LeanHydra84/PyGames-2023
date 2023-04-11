@@ -1,8 +1,10 @@
 import pygame
 import rendering.stategraph as graph
 import character.feet as feet
+import character.unconscious as unconscious
 
 from collections import deque
+
 MAXTIME = 5
 
 class Player(pygame.sprite.Sprite):
@@ -29,7 +31,7 @@ class Player(pygame.sprite.Sprite):
         ward = pygame.Vector2.from_polar((1, self.rotation))
         ward.y = -ward.y
         return ward
-
+    
     def attack_pressed(self, state):
         if self.stategraph.state() == 0:
             self.stategraph.force_state(1)
@@ -50,11 +52,9 @@ class Player(pygame.sprite.Sprite):
                     deadpos = spr.position
                     spr.kill()
 
-                    newspr = pygame.sprite.Sprite()
-                    newspr.image = state.RESOURCES.DEADBODY_TESTSPRITE
-                    newspr.rect = newspr.image.get_rect(center=deadpos)
+                    body = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, deadpos)
+                    state.renderLayers.add_to("DeadBodies", body)
 
-                    state.renderLayers.add_to("DeadBodies", newspr)
                     hitflag = True
                 
             if hitflag:
@@ -72,9 +72,9 @@ class Player(pygame.sprite.Sprite):
         # Set Image
 
         mousepos = pygame.mouse.get_pos()
-        self.rotation = -(mousepos - self.position).as_polar()[1]
+        self.rotation = -(mousepos - (self.position + state.camera)).as_polar()[1]
         self.image = pygame.transform.rotate(self.stategraph.activeFrame, self.rotation)
-        self.rect = self.image.get_rect(center=self.position)
+        self.rect = self.image.get_rect(center=(self.position + state.camera))
 
         # Movement
         mx = 1 if state.keys[3] else -1 if state.keys[1] else 0
@@ -85,13 +85,15 @@ class Player(pygame.sprite.Sprite):
             if state.keys[4]:
                 mv *= 1.7
 
+            adjPos = self.position + state.camera
+
             room = state.map.get_inside(self)
             if room != None:
-                if graph.check_collider(room,   [int(self.position.x + mv.x), int(self.position.y + mv.y)]):
+                if graph.check_collider(room,   [int(adjPos.x + mv.x), int(adjPos.y + mv.y)]):
                     self.position += mv
-                elif graph.check_collider(room, [int(self.position.x + mv.x), int(self.position.y)]):
+                elif graph.check_collider(room, [int(adjPos.x + mv.x), int(adjPos.y)]):
                     self.position.x += mv.x
-                elif graph.check_collider(room, [int(self.position.x), int(self.position.y + mv.y)]):
+                elif graph.check_collider(room, [int(adjPos.x), int(adjPos.y + mv.y)]):
                     self.position.y += mv.y
 
             else:
@@ -108,8 +110,8 @@ class Player(pygame.sprite.Sprite):
         # Positioning
         #state.camPos = self.position
         
-        self.rect.center = self.position
-        self.feet.update()
+        self.rect.center = self.position + state.camera
+        self.feet.update(self.position + state.camera)
 
         # Update position history
         self.history.append(self.position.copy())        
