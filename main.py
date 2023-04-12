@@ -83,7 +83,7 @@ def main():
     layers.add_to("Character", state.player)
     layers.add_to("Feet", state.player.feet)
 
-    for i in range(2):
+    for i in range(10):
         init_enemy(layers, state)
 
     pauseMenu = build_pause_menu(state, 5)
