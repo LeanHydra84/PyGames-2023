@@ -1,15 +1,21 @@
 import pygame
 import gentest2
+import gentest3
+import gentest4
+
+global DEBUGSCREEN
 
 def main():
+    global DEBUGSCREEN
     pygame.init()
 
 
     screen = pygame.display.set_mode( (1280, 720) )
+    DEBUGSCREEN = screen
     clock = pygame.time.Clock()
-    group = pygame.sprite.Group()
 
-    gentest2.createmap(group)
+    group = pygame.sprite.Group()
+    gentest4.createmap(group, 15)
 
     running = True
     while running:
@@ -23,6 +29,9 @@ def main():
                 if e.key == pygame.K_ESCAPE:
                     running = False
                     break
+                elif e.key == pygame.K_j:
+                    group.empty()
+                    gentest4.createmap(group, 15)
 
         # Update
 

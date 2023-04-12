@@ -1,13 +1,26 @@
 import pygame
 import random as rand
 
-min_leaf_size = 6
-max_leaf_size = 20
+min_leaf_size = 50
+max_leaf_size = 100
+
+def rand_color():
+    return pygame.Color(rand.randint(0, 255), rand.randint(0, 255), rand.randint(0, 255))
+
+class RAND_COL_AREA(pygame.sprite.Sprite):
+    def __init__(self, rect):
+        pygame.sprite.Sprite.__init__(self)
+
+        color = rand_color()
+
+        self.rect = rect
+        self.image = pygame.Surface(rect.size)
+        self.image.fill(color)
 
 class Node:
     def __init__(self, rect):
 
-        self.leftchild = None
+        self.leftChild = None
         self.rightChild = None
 
         self.room = None
@@ -16,11 +29,15 @@ class Node:
         self.halls = []
 
     def split(self):
-        if self.leftchild != None or self.rightChild != None:
+        if self.leftChild != None or self.rightChild != None:
             print("Already Split")
             return False
         
         horizontal = False
+
+        if self.rect.w == 0 or self.rect.h == 0:
+            return False
+
         if self.rect.w / self.rect.h > 1.25:
             horizontal = True
         if self.rect.h / self.rect.w > 1.25:
@@ -35,11 +52,11 @@ class Node:
         
         split = rand.randrange(min_leaf_size, maxS)
         if horizontal:
-            self.leftchild = Node(pygame.Rect(self.rect.topleft, (self.rect.w, split)))
+            self.leftChild = Node(pygame.Rect(self.rect.topleft, (self.rect.w, split)))
             self.rightChild = Node(pygame.Rect((self.rect.x, self.rect.y + split), (self.rect.w, self.rect.h - split)))
         else:
-            self.leftchild = Node(pygame.Rect(self.rect.topleft, (split, self.rect.height)))
-            self.rightChild = Node(pygame.Rect(self.rect.x + split, self.rect.y), (self.rect.w - split, self.rect.h))
+            self.leftChild = Node(pygame.Rect((self.rect.topleft, (split, self.rect.height))))
+            self.rightChild = Node(pygame.Rect((self.rect.x + split, self.rect.y), (self.rect.w - split, self.rect.h)))
         return True
 
 def createmap(group):
@@ -60,4 +77,6 @@ def createmap(group):
                         nodes.append(l.rightChild)
                         didsplit = True
     
+    for x in nodes:
+        group.add(RAND_COL_AREA(x.rect))
     

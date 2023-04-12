@@ -1,5 +1,6 @@
 import pygame
-import map.room_creator as room_creator
+#import map.room_creator as room_creator
+import demos.MapGen.gentest4 as mapgen
 
 from character.player import Player
 from character.hallmonitor import HallMonitor
@@ -35,14 +36,19 @@ class State: # Gamestate handler for all things gaming
     def togglepause(self):
         self.paused = not self.paused
 
-def init_enemy(layersObj, state):
-    pos = pygame.Vector2(rand.randint(0, state.screensize[0]), rand.randint(0, state.screensize[1]))
+def init_enemy_atpos(layersObj, state, pos):
     en = HallMonitor(state.RESOURCES.HALLMONITOR, state.RESOURCES.FEET, state)
     en.position = pos
     en.rotation = rand.randrange(0, 360)
 
     layersObj.add_to("Enemies", en)
     layersObj.add_to("Feet", en.feet)
+
+def init_enemy(layersObj, state):
+    pos = pygame.Vector2(rand.randint(0, state.screensize[0]), rand.randint(0, state.screensize[1]))
+    init_enemy_atpos(layersObj, state, pos)
+
+
 
 def main():
     pygame.init()
@@ -56,10 +62,15 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("School Game")
 
-    room_creator.room_scale = 7
+    #room_creator.room_scale = 7
 
-    state.map = room_creator.Map()
-    state.map.create_rooms()
+    #state.map = room_creator.Map()
+    #state.map.create_rooms()
+
+    mapgen.SCALE = 15
+    state.map = mapgen.createmap(5)
+
+    print(state.map.details.uncappedEnds)
 
     state.RESOURCES = resources.GlobalResources(5)
     state.RESOURCES.load()
@@ -83,8 +94,11 @@ def main():
     layers.add_to("Character", state.player)
     layers.add_to("Feet", state.player.feet)
 
-    for i in range(10):
-        init_enemy(layers, state)
+    # for i in range(10):
+    #     init_enemy(layers, state)
+
+    for pos in state.map.details.deadEndPos:
+        init_enemy_atpos(layers, state, pygame.Vector2(pos))
 
     pauseMenu = build_pause_menu(state, 5)
     text = Textbox(state)

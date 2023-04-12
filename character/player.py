@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.rect : pygame.Rect = None
 
         # Movement
-        self.position = pygame.Vector2(500, 500)
+        self.position = pygame.Vector2(475, 500)
         self.rotation = 0
         self.speed = 3
         self.moving = False
