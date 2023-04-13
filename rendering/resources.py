@@ -17,9 +17,11 @@ class GlobalResources:
 
         self.SND_PUNCH = pygame.mixer.Sound("assets\\audio\\punch_test.wav")
         self.SND_WHIFF = pygame.mixer.Sound("assets\\audio\\whiff_test.mp3")
+        self.SND_HADOUKEN = pygame.mixer.Sound("assets\\audio\\hadouken.mp3")
 
         self.SND_PUNCH.set_volume(0.5)
         self.SND_WHIFF.set_volume(0.5)
+        self.SND_HADOUKEN.set_volume(0.5)
 
     def release(self):
         del self.PLAYER

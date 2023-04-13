@@ -137,7 +137,7 @@ def main():
                     pass
 
                 if event.key == pygame.K_j:
-                    text.read("Lorem ipsum test string\nHere is line two swag here we go")
+                    text.begin_conversation(["Here is some\nepic text for you to read", "And here is some extra more\ntext for you to read like a big boy.", "Finally, here is last text"])
                     text.togglecapture()
                     state.pause()
 
@@ -182,11 +182,13 @@ def main():
             for c in collision:
                 c.interact(state, pressedkey)
 
+            state.camera = vec_round(state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed))
+
+
         
 
         hue.update()
 
-        state.camera = vec_round(state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed))
 
         # Draw
         screen.fill(hue.color())

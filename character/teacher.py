@@ -2,12 +2,15 @@ import pygame
 import character.enemybase as eb
 from character.projectile import Projectile
 
-detectRange = 500**2
-attackRange = 450**2
+detectRange = 800**2
+attackRange = 700**2
 spotTime = 60
 forgetTime = 120
 
 class Teacher(eb.EnemyBase):
+    attackCooldown = 60
+    attackTime = 12
+
     def __init__(self, resources, rsFeet, state):
         super().__init__(resources, rsFeet, state, 1.8)
 
@@ -28,7 +31,7 @@ class Teacher(eb.EnemyBase):
 
         elif self.aimode == eb.aimodes.ALERTED:
             if self.can_see_point(targetPos, state):
-                self.move_towards(targetPos, self.speed * 0.5)
+                self.move_towards(targetPos, self.speed * 0.5, state)
         
                 self.spotTimer += 1
                 if self.spotTimer >= spotTime:
@@ -43,7 +46,7 @@ class Teacher(eb.EnemyBase):
                 self.attacking = True
 
             if self.can_see_point(targetPos, state):
-                self.move_towards(targetPos, self.speed if not self.attacking else self.speed * 0.1)
+                self.move_towards(targetPos, self.speed if not self.attacking else self.speed * 0.1, state)
             else:
                 self.attackTimer = 0
                 self.aimode = eb.aimodes.SEARCHING
@@ -62,7 +65,7 @@ class Teacher(eb.EnemyBase):
                 else:
                     targetPos = self.tracksheet[0]
             
-            self.move_towards(targetPos, self.speed)
+            self.move_towards(targetPos, self.speed, state)
 
             if self.can_see_point(state.player.position, state):
                 self.aimode = eb.aimodes.CHASING
@@ -77,6 +80,9 @@ class Teacher(eb.EnemyBase):
                 self.spotTimer = 0
 
     def attack(self, state):
+        self.attackTime = 0
+
+        state.RESOURCES.SND_HADOUKEN.play()
 
         spr = pygame.transform.rotate(state.RESOURCES.PROJECTILE, self.rotation)
         newprojectile = Projectile(spr, self.forward(), self.position)

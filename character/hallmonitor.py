@@ -51,7 +51,7 @@ class HallMonitor(eb.EnemyBase):
 
         elif self.aimode == eb.aimodes.ALERTED:
             if self.can_see_point(targetPos, state):
-                self.move_towards(targetPos, self.speed * 0.5)
+                self.move_towards(targetPos, self.speed * 0.5, state)
             
                 self.spotTimer += 1
                 if self.spotTimer >= spotTime:
@@ -65,7 +65,7 @@ class HallMonitor(eb.EnemyBase):
                 self.attacking = True
 
             if self.can_see_point(targetPos, state):
-                self.move_towards(targetPos, self.speed)
+                self.move_towards(targetPos, self.speed, state)
             else:
                 self.attackTimer = 0
                 self.aimode = eb.aimodes.SEARCHING
@@ -84,7 +84,7 @@ class HallMonitor(eb.EnemyBase):
                 else:
                     targetPos = self.tracksheet[0]
             
-            self.move_towards(targetPos, self.speed)
+            self.move_towards(targetPos, self.speed, state)
 
             if self.can_see_point(state.player.position, state):
                 self.aimode = eb.aimodes.CHASING

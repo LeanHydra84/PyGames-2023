@@ -68,10 +68,12 @@ class EnemyBase(pygame.sprite.Sprite):
                 return False
         return True
 
-    def move_towards(self, target, speed):
+    def move_towards(self, target, speed, state):
         mov = (target - self.position).normalize()
-        self.position += mov * speed
+        newPos = self.position + mov * speed
         self.rotation = -(target - self.position).as_polar()[1]
+        if state.map.get_collision_at_point(newPos):
+            self.position = newPos
 
     def position_reached(self, pos: pygame.Vector2):
         return self.position.distance_squared_to(pos) < reachedThreshold
