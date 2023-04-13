@@ -4,6 +4,7 @@ import demos.MapGen.gentest4 as mapgen
 
 from character.player import Player
 from character.hallmonitor import HallMonitor
+from character.teacher import Teacher
 
 import rendering.resources as resources
 from rendering.layerManager import LayerManager
@@ -48,7 +49,19 @@ def init_enemy(layersObj, state):
     pos = pygame.Vector2(rand.randint(0, state.screensize[0]), rand.randint(0, state.screensize[1]))
     init_enemy_atpos(layersObj, state, pos)
 
+def init_teacher_atpos(layersObj, state, pos):
+    en = Teacher(state.RESOURCES.TEACHER, state.RESOURCES.FEET, state)
+    en.position = pos
+    en.rotation = rand.randrange(0, 360)
 
+    layersObj.add_to("Enemies", en)
+    layersObj.add_to("Feet", en.feet)
+
+def vec_round(vec: pygame.Vector2) -> pygame.Vector2:
+    nv = vec.copy()
+    nv.x = round(nv.x)
+    nv.y = round(nv.y)
+    return nv
 
 def main():
     pygame.init()
@@ -87,9 +100,9 @@ def main():
 
     layers.add_new("DeadBodies", True)
     layers.add_new("Interactable", True)
+    layers.add_new("Feet")
     layers.add_new("Enemies", True)
     layers.add_new("Character", True)
-    layers.add_new("Feet")
 
     layers.add_to("Character", state.player)
     layers.add_to("Feet", state.player.feet)
@@ -98,7 +111,7 @@ def main():
     #     init_enemy(layers, state)
 
     for pos in state.map.details.deadEndPos:
-        init_enemy_atpos(layers, state, pygame.Vector2(pos))
+        init_teacher_atpos(layers, state, pygame.Vector2(pos))
 
     pauseMenu = build_pause_menu(state, 5)
     text = Textbox(state)
@@ -164,7 +177,7 @@ def main():
             layers.update(state)
             # update enemies, etc
 
-            collision = pygame.sprite.spritecollide(layers.find("Interactable").layer, state.player)
+            collision = pygame.sprite.spritecollide(state.player, layers.find("Interactable").layer, False)
             pressedkey = bool(pygame.key.get_pressed()[pygame.K_e])
             for c in collision:
                 c.interact(state, pressedkey)
@@ -173,7 +186,7 @@ def main():
 
         hue.update()
 
-        state.camera = state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed)
+        state.camera = vec_round(state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed))
 
         # Draw
         screen.fill(hue.color())
