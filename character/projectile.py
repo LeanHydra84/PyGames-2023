@@ -1,7 +1,7 @@
 import pygame
 
 projectilespeed = 8
-hitdistsqr = 25**2
+hitdistsqr = 35**2
 maxLife = 1000
 
 class Projectile(pygame.sprite.Sprite):
@@ -10,7 +10,7 @@ class Projectile(pygame.sprite.Sprite):
         self.position: pygame.Vector2 = position.copy()
         
         self.image = sprite
-        self.rect = sprite.get_rect(center=position)
+        self.rect = sprite.get_rect(topleft=(-100, -100))
         self.forward = direction
 
         self.lifecounter = 0
@@ -26,10 +26,10 @@ class Projectile(pygame.sprite.Sprite):
             self.kill()
 
         if self.position.distance_squared_to(state.player.position) < hitdistsqr:
-            state.player.kill()
             self.kill()
 
-            state.RESOURCES.SND_PUNCH.play()
+            if state.player.hit_by_enemy_attack(self.forward, state):
+                state.RESOURCES.SND_PUNCH.play()
 
         if self.lifecounter >= maxLife:
             self.kill()

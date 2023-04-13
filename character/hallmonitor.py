@@ -103,10 +103,8 @@ class HallMonitor(eb.EnemyBase):
         self.attackTimer = 0
 
         if self.position.distance_squared_to(state.player.position) < attackrange:
-            state.player.kill()
-            newspr = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, state.player.position)
-            state.renderLayers.add_to("DeadBodies", newspr)
-
-            state.RESOURCES.SND_PUNCH.play()
+            hit = state.player.hit_by_enemy_attack(self.forward(), state)
+            if hit:
+                state.RESOURCES.SND_PUNCH.play()
         else:
             state.RESOURCES.SND_WHIFF.play()

@@ -2,8 +2,9 @@ import pygame
 import character.enemybase as eb
 from character.projectile import Projectile
 
-detectRange = 800**2
-attackRange = 700**2
+detectRange = 650**2
+attackRange = 500**2
+stopAdvancingrange = 300**2
 spotTime = 60
 forgetTime = 120
 
@@ -46,7 +47,9 @@ class Teacher(eb.EnemyBase):
                 self.attacking = True
 
             if self.can_see_point(targetPos, state):
-                self.move_towards(targetPos, self.speed if not self.attacking else self.speed * 0.1, state)
+
+                if self.position.distance_squared_to(state.player.position) > stopAdvancingrange:
+                    self.move_towards(targetPos, self.speed if not self.attacking else self.speed * 0.1, state)
             else:
                 self.attackTimer = 0
                 self.aimode = eb.aimodes.SEARCHING

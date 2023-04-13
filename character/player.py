@@ -3,6 +3,7 @@ import rendering.stategraph as graph
 import character.feet as feet
 import character.unconscious as unconscious
 
+from math import acos
 from collections import deque
 
 MAXTIME = 5
@@ -26,8 +27,15 @@ class Player(pygame.sprite.Sprite):
         self.moving = False
 
         self.history = deque(maxlen=MAXTIME)
+        self.shielded = False
 
-    def forward(self):
+        # ITEMS
+
+        self.hasTray = True
+        self.hasRuler = False
+        self.answerCount = 0
+
+    def forward(self) -> pygame.Vector2:
         ward = pygame.Vector2.from_polar((1, self.rotation))
         ward.y = -ward.y
         return ward
@@ -62,7 +70,41 @@ class Player(pygame.sprite.Sprite):
             else:
                 state.RESOURCES.SND_WHIFF.play()
 
+    def shield(self, boolval):
+        if not self.hasTray:
+            return
+        sv = self.stategraph.state()
+        if boolval:
+            if sv == 0:
+                self.stategraph.force_state(2)
+                self.shielded = True
+        else:
+            if sv == 3 or sv == 2:
+                self.stategraph.force_state(4)
+                self.shielded = False
 
+    def hit_by_enemy_attack(self, srcDir: pygame.Vector2, state) -> bool:
+        if self.stategraph.state() == 3:
+            sfwd = self.forward()
+            anglebtwn =  acos( sfwd.dot(srcDir) / (sfwd.magnitude() * srcDir.magnitude()) )
+            print(anglebtwn)
+
+            if anglebtwn < 1.8:
+                self.kill_me(state)
+                return True
+
+            else:
+                state.RESOURCES.SND_TONK.play()
+                return False
+        else:
+            self.kill_me(state)
+            return True
+
+
+    def kill_me(self, state):
+        self.kill()
+        newspr = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, self.position)
+        state.renderLayers.add_to("DeadBodies", newspr)
 
     def update(self, state):
         
@@ -81,7 +123,8 @@ class Player(pygame.sprite.Sprite):
         my = 1 if state.keys[2] else -1 if state.keys[0] else 0
 
         if mx != 0 or my != 0:
-            mv = pygame.Vector2(mx, my).normalize() * self.speed
+            trueSpeed = self.speed if not self.shielded else self.speed / 2
+            mv = pygame.Vector2(mx, my).normalize() * trueSpeed
             if state.keys[4]:
                 mv *= 1.7
 

@@ -5,6 +5,7 @@ import demos.MapGen.gentest4 as mapgen
 from character.player import Player
 from character.hallmonitor import HallMonitor
 from character.teacher import Teacher
+from character.pickup import Pickup
 
 import rendering.resources as resources
 from rendering.layerManager import LayerManager
@@ -107,6 +108,8 @@ def main():
     layers.add_to("Character", state.player)
     layers.add_to("Feet", state.player.feet)
 
+    # TEST PICKUP
+
     # for i in range(10):
     #     init_enemy(layers, state)
 
@@ -115,6 +118,8 @@ def main():
 
     pauseMenu = build_pause_menu(state, 5)
     text = Textbox(state)
+
+    
 
     keys = state.keys
     while state.running:
@@ -170,12 +175,20 @@ def main():
                 if state.captureState != None:
                     state.captureState.register_click(pygame.mouse.get_pos())
                 elif state.player.alive():
-                    state.player.attack_pressed(state)
+
+                    if event.button == 1: # Left Click
+                        state.player.attack_pressed(state)
+                    elif event.button == 3: # Right Click
+                        state.player.shield(True)
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if state.captureState == None:
+                    if event.button == 3: # Right Click
+                        state.player.shield(False)
 
         # Update
         if not state.paused:
             layers.update(state)
-            # update enemies, etc
 
             collision = pygame.sprite.spritecollide(state.player, layers.find("Interactable").layer, False)
             pressedkey = bool(pygame.key.get_pressed()[pygame.K_e])
@@ -185,10 +198,7 @@ def main():
             state.camera = vec_round(state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed))
 
 
-        
-
         hue.update()
-
 
         # Draw
         screen.fill(hue.color())

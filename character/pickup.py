@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Pickup(pygame.sprite.Sprite):
-    def __init__(self, sprite, type, position, onpickup: function):
+    def __init__(self, sprite, type, position, onpickup):
         self.type = type
         self.image = sprite
         self.position = position

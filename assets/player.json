@@ -10,5 +10,23 @@
         "dim": [3, 0],
         "frames": 2,
         "transition": 0
+    },
+    {
+        "path": "assets\\shespriteonmy\\shield_raise.png",
+        "dim": [2, 0],
+        "frames": 5,
+        "transition": 3
+    },
+    {
+        "path": "assets\\shespriteonmy\\shield_anim.png",
+        "dim": [1, 0],
+        "frames": 30,
+        "transition": 3
+    },
+    {
+        "path": "assets\\shespriteonmy\\shield_lower.png",
+        "dim": [2, 0],
+        "frames": 3,
+        "transition": 0
     }
 ]
