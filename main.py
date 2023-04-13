@@ -86,7 +86,7 @@ def main():
     layers.add(state.map.group, "Map", True)
 
     layers.add_new("DeadBodies", True)
-    layers.add_new("Pickups", True)
+    layers.add_new("Interactable", True)
     layers.add_new("Enemies", True)
     layers.add_new("Character", True)
     layers.add_new("Feet")
@@ -163,6 +163,13 @@ def main():
         if not state.paused:
             layers.update(state)
             # update enemies, etc
+
+            collision = pygame.sprite.spritecollide(layers.find("Interactable").layer, state.player)
+            pressedkey = bool(pygame.key.get_pressed()[pygame.K_e])
+            for c in collision:
+                c.interact(state, pressedkey)
+
+        
 
         hue.update()
 

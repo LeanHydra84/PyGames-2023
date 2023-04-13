@@ -1,13 +1,14 @@
 import pygame
+
 import rendering.stategraph as graph
+
+import character.enemybase as eb
 import character.feet as feet
 import character.unconscious as unconscious
 
 from enum import Enum
 
 detectRange = 450**2
-reachedThreshold = 10**2 # Distance before target position is considered "reached"
-splits = 32
 
 # TODO: Market research these values
 forgetTime = 120
@@ -52,21 +53,6 @@ class HallMonitor(pygame.sprite.Sprite):
         self.tracksheet = None
 
     # Suuuuper hacky line-of-sight pathing. Checks n (n=splits) points along line between self and player for colliders
-    def can_see_point(self, point: pygame.Vector2, state) -> bool:
-        direction = (point - self.position).normalize() * (point.distance_to(self.position) / splits)
-        adjp = self.position + state.camera
-        for i in range(splits - 1):
-            if not state.map.get_collision_at_point(adjp + i * direction):
-                return False
-        return True
-
-    def position_reached(self, pos: pygame.Vector2):
-        return self.position.distance_squared_to(pos) < reachedThreshold
-
-    def move_towards(self, target, speed):
-        mov = (target - self.position).normalize()
-        self.position += mov * speed
-        self.rotation = -(target - self.position).as_polar()[1]
 
 
     def ai_tick(self, state):
@@ -90,14 +76,14 @@ class HallMonitor(pygame.sprite.Sprite):
         if self.aimode == aimodes.IDLE:
             # Turning, sweeping, etc
 
-            if self.can_see_point(targetPos, state):
+            if eb.can_see_point(self.position, targetPos, state):
                 self.aimode = aimodes.ALERTED
 
             pass
 
         elif self.aimode == aimodes.ALERTED:
-            if self.can_see_point(targetPos, state):
-                self.move_towards(targetPos, self.speed * 0.5)
+            if eb.can_see_point(self.position, targetPos, state):
+                eb.move_towards(self, targetPos, self.speed * 0.5)
             
                 self.spotTimer += 1
                 if self.spotTimer >= spotTime:
@@ -110,8 +96,8 @@ class HallMonitor(pygame.sprite.Sprite):
             if self.position.distance_squared_to(state.player.position) < attackrange and not self.cooldown:
                 self.attacking = True
 
-            if self.can_see_point(targetPos, state):
-                self.move_towards(targetPos, self.speed)
+            if eb.can_see_point(self.position, targetPos, state):
+                eb.move_towards(self,targetPos, self.speed)
             else:
                 self.attackTimer = 0
                 self.aimode = aimodes.SEARCHING
@@ -130,9 +116,9 @@ class HallMonitor(pygame.sprite.Sprite):
                 else:
                     targetPos = self.tracksheet[0]
             
-            self.move_towards(targetPos, self.speed)
+            eb.move_towards(self, targetPos, self.speed)
 
-            if self.can_see_point(state.player.position, state):
+            if eb.can_see_point(self.position, state.player.position, state):
                 self.aimode = aimodes.CHASING
                 self.tracksheet = None
                 self.spotTimer = 0
