@@ -1,5 +1,5 @@
 import pygame
-import demos.MapGen.gentest4 as mapgen
+import map.map_generator as mapgen
 
 from character.player import Player
 from character.hallmonitor import HallMonitor
@@ -17,7 +17,7 @@ import random as rand
 
 lerpSpeed = 5/60
 
-class State: # Gamestate handler for all things gaming
+class State: # Gamestate handler for all things gamings
     def __init__(self):
         self.screensize = (1280, 720)
         self.centerScreen = (self.screensize[0] / 2, self.screensize[1] / 2)
@@ -26,7 +26,7 @@ class State: # Gamestate handler for all things gaming
         self.running = True
         self.captureState = None
 
-        self.camera = pygame.Vector2(0, 0)
+        self.camera = pygame.Vector2(self.centerScreen)
 
     def quit(self):
         self.running = False
@@ -83,17 +83,16 @@ def main():
     mapgen.SCALE = 15
     state.map = mapgen.createmap(5)
 
-    print(state.map.details.uncappedEnds)
+    #print(state.map.details.uncappedEnds)
 
     state.RESOURCES = resources.GlobalResources(5)
     state.RESOURCES.load()
 
     state.player = Player(state.RESOURCES.PLAYER, state.RESOURCES.FEET)
-    state.player.position = pygame.Vector2(state.screensize[0] / 2, state.screensize[1] / 2)
 
     hue = HueShift(pygame.Color(100, 25, 25), 1)
-
     layers = LayerManager()
+
     state.renderLayers = layers
 
     layers.add(state.map.group, "Map", True)
@@ -112,8 +111,8 @@ def main():
     # for i in range(10):
     #     init_enemy(layers, state)
 
-    for pos in state.map.details.deadEndPos:
-        init_teacher_atpos(layers, state, pygame.Vector2(pos))
+    for pos in state.map.details.deadEnds:
+        init_enemy_atpos(layers, state, pygame.Vector2(pos[0]))
 
     pauseMenu = build_pause_menu(state, 5)
     text = Textbox(state)

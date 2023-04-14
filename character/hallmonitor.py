@@ -73,9 +73,9 @@ class HallMonitor(eb.EnemyBase):
                 self.tracksheet = state.player.history.copy()
 
         elif self.aimode == eb.aimodes.SEARCHING:
-            targetPos = self.tracksheet[0]
+            targetPos = self.tracksheet[-1]
             if self.position_reached(targetPos):
-                self.tracksheet.popleft()
+                self.tracksheet.pop()
                 if len(self.tracksheet) == 0:
                     self.aimode = eb.aimodes.IDLE
                     self.spotTimer = 0

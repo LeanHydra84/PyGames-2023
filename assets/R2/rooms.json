@@ -1,10 +1,23 @@
 [
     {
-        "name": "Dead End",
-        "path": "assets\\R2\\DEAD_END.png",
-        "collider": "assets\\R2\\DEAD_END_C.png",
-        "exits": [
-            [1, 0]
-        ]
+        "path": "assets\\R2\\demorooms\\startingroom.png",
+        "collider": "assets\\R2\\demorooms\\startingroom_C.png",
+
+        "doorpos": [0, -16],
+        "doorforward": [0, -1]
+    },
+    {
+        "path": "assets\\R2\\demorooms\\demoroom1.png",
+        "collider": "assets\\R2\\demorooms\\demoroom1_C.png",
+
+        "doorpos": [32, 0],
+        "doorforward": [1, 0]
+    },
+    {
+        "path": "assets\\R2\\demorooms\\bathroom.png",
+        "collider": "assets\\R2\\demorooms\\bathroom_C.png",
+
+        "doorpos": [-15, 13],
+        "doorforward": [0, 1]
     }
 ]

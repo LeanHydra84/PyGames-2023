@@ -1,0 +1,8 @@
+{
+    "name": "Dead End",
+    "path": "assets\\R2\\DEAD_END.png",
+    "collider": "assets\\R2\\DEAD_END_C.png",
+    "exits": [
+        [1, 0]
+    ]
+}

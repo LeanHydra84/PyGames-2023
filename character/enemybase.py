@@ -5,7 +5,7 @@ import character.feet as feet
 import character.unconscious as unconscious
 from enum import Enum
 
-playerHaltDistance = 20**2
+playerHaltDistance = 35**2
 
 # AI MODES
 class aimodes(Enum):
@@ -15,7 +15,7 @@ class aimodes(Enum):
     SEARCHING = 4   # AI does not have line-of-sight with target, is following target trail.
 
 splits = 32
-reachedThreshold = 10**2 # Distance before target position is considered "reached"
+reachedThreshold = 20**2 # Distance before target position is considered "reached"
 
 class EnemyBase(pygame.sprite.Sprite):
     attackCooldown = 0
@@ -74,8 +74,23 @@ class EnemyBase(pygame.sprite.Sprite):
         newPos = self.position + mov * speed
         self.rotation = -(target - self.position).as_polar()[1]
         
-        if state.map.get_collision_at_point(newPos) and self.position.distance_squared_to(state.player.position) > playerHaltDistance:
-            self.position = newPos
+        if self.position.distance_squared_to(state.player.position) > playerHaltDistance:
+
+            if state.map.get_collision_at_point(newPos + state.camera):
+                self.position = newPos
+                return
+            
+            if mov.y != 0:
+                pY = self.position + pygame.Vector2(0, mov.y * speed)
+                if state.map.get_collision_at_point(pY + state.camera):
+                    self.position = pY
+            if mov.x != 0:
+                pX = self.position + pygame.Vector2(mov.x * speed, 0)
+                if state.map.get_collision_at_point(pX + state.camera):
+                    self.position = pX
+
+
+
 
     def position_reached(self, pos: pygame.Vector2):
         return self.position.distance_squared_to(pos) < reachedThreshold
