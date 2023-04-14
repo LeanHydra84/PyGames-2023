@@ -1,5 +1,4 @@
 import pygame
-#import map.room_creator as room_creator
 import demos.MapGen.gentest4 as mapgen
 
 from character.player import Player

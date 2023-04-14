@@ -73,6 +73,7 @@ class EnemyBase(pygame.sprite.Sprite):
         mov = (target - self.position).normalize()
         newPos = self.position + mov * speed
         self.rotation = -(target - self.position).as_polar()[1]
+        
         if state.map.get_collision_at_point(newPos) and self.position.distance_squared_to(state.player.position) > playerHaltDistance:
             self.position = newPos
 
