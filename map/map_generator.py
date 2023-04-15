@@ -132,7 +132,7 @@ def place_dead_end(map, resource, pos, direction):
     collided = pygame.sprite.spritecollide(hw, map.group, False, pygame.sprite.collide_rect_ratio(1.1))
     for other in collided:
         if other.is_dead_end and ((other.position.x == hw.position.x) or (other.position.y == hw.position.y)):
-            print("Deleting double. You're welcome, map geometry.")
+            #print("Deleting double. You're welcome, map geometry.")
             other.kill()
             return
     
@@ -223,15 +223,15 @@ class Mapv2:
         self.details = BuildDetails(self.group)
         #self.rooms = []
 
-    def get_collision_at_point(self, point) -> bool:
+    def get_collision_at_point(self, point) -> bool: # True means valid position, false means collision
         for x in self.group:
             if x.rect.collidepoint(point):
                 col: pygame.Surface = x.collider
                 color = col.get_at( (int(point.x - x.rect.x), int(point.y - x.rect.y)) )
                 if color.r == 255:
                     return True
-                return False
-        return True
+                #return False # Commenting this could lead to more lag?
+        return False
 
     def get_inside(self, sprite : pygame.sprite.Sprite):
         collist = pygame.sprite.spritecollide(sprite, self.group, False)

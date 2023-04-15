@@ -3,6 +3,8 @@ import rendering.stategraph as graph
 import character.feet as feet
 import character.unconscious as unconscious
 
+import capture.deathscreen as death
+
 from math import acos
 from collections import deque
 
@@ -26,14 +28,21 @@ class Player(pygame.sprite.Sprite):
         self.speed = 3
         self.moving = False
 
-        self.history = deque(maxlen=MAXTIME)
+        self.history = deque(maxlen=MAXTIME) # make this better, future me
         self.shielded = False
 
         # ITEMS
 
-        self.hasTray = True
+        self.hasTray = False
         self.hasRuler = False
         self.answerCount = 0
+
+
+    def pickup_item(self, type):
+        if type == "Tray":
+            self.hasTray = True
+        elif type == "Ruler":
+            self.hasRuler = True
 
     def forward(self) -> pygame.Vector2:
         ward = pygame.Vector2.from_polar((1, self.rotation))
@@ -105,6 +114,8 @@ class Player(pygame.sprite.Sprite):
         newspr = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, self.position)
         state.renderLayers.add_to("DeadBodies", newspr)
 
+        death.DeathScreen(state, state.RESOURCES.DEATH_TEXT, 100, 5, 2).togglecapture()
+
     def update(self, state):
         
         # Animation
@@ -129,17 +140,21 @@ class Player(pygame.sprite.Sprite):
 
             adjPos = self.position + state.camera
 
-            room = state.map.get_inside(self)
-            if room != None:
-                if graph.check_collider(room,   [int(adjPos.x + mv.x), int(adjPos.y + mv.y)]):
-                    self.position += mv
-                elif graph.check_collider(room, [int(adjPos.x + mv.x), int(adjPos.y)]):
-                    self.position.x += mv.x
-                elif graph.check_collider(room, [int(adjPos.x), int(adjPos.y + mv.y)]):
-                    self.position.y += mv.y
+            # room = state.map.get_inside(self)
+            # if room != None:
+            #     if graph.check_collider(room,   [int(adjPos.x + mv.x), int(adjPos.y + mv.y)]):
+            #         self.position += mv
+            #     elif graph.check_collider(room, [int(adjPos.x + mv.x), int(adjPos.y)]):
+            #         self.position.x += mv.x
+            #     elif graph.check_collider(room, [int(adjPos.x), int(adjPos.y + mv.y)]):
+            #         self.position.y += mv.y
 
-            else:
+            if state.map.get_collision_at_point(adjPos + mv):
                 self.position += mv
+            elif state.map.get_collision_at_point(adjPos + pygame.Vector2(mv.x, 0)):
+                self.position.x += mv.x
+            elif state.map.get_collision_at_point(adjPos + pygame.Vector2(0, mv.y)):
+                self.position.y += mv.y
 
             if self.moving == False:
                 self.feet.set_visible(True)

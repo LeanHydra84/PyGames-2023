@@ -9,7 +9,7 @@ class Textbox(capturestate.CaptureState):
         self.font = pygame.font.SysFont("Arial", 40) # Import font
         self.group = pygame.sprite.GroupSingle()
 
-        self.background = pygame.transform.scale_by(pygame.image.load("assets\\menu_test\\textbox_border.png").convert_alpha(), 15)
+        self.background = pygame.transform.scale_by(pygame.image.load("assets\\menu\\textbox_border.png").convert_alpha(), 15)
         self.brRect = self.background.get_rect()
         self.brRect.centerx = state.centerScreen[0]
         self.brRect.bottom = state.screensize[1]

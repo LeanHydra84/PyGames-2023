@@ -84,7 +84,7 @@ def build_pause_menu(state_object, btnScale) -> OverlayMenu:
     menu = OverlayMenu(state_object)
     menu.multColor = pygame.Color(100, 100, 200, 255)
 
-    headerIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu_test\\header.png").convert_alpha(), btnScale)
+    headerIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu\\header.png").convert_alpha(), btnScale)
     header = pygame.sprite.Sprite()
     header.image = headerIMG
     header.rect = headerIMG.get_rect()
@@ -92,13 +92,13 @@ def build_pause_menu(state_object, btnScale) -> OverlayMenu:
     header.rect.y = 25
     menu.add_static(header, True)
     
-    resumeIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu_test\\play.png").convert_alpha(), btnScale)
+    resumeIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu\\play.png").convert_alpha(), btnScale)
     resume = MenuButton(resumeIMG)
     resume.hoverColor = pygame.Color(50, 200, 100, 255)
     resume.rect.topleft = (100, 300)
     menu.add_button(resume, lambda: (menu.togglecapture(), state_object.unpause()))
 
-    quitIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu_test\\stop.png").convert_alpha(), btnScale)
+    quitIMG = pygame.transform.scale_by(pygame.image.load("assets\\menu\\stop.png").convert_alpha(), btnScale)
     quit = MenuButton(quitIMG)
     quit.hoverColor = pygame.Color(200, 50, 100, 255)
     quit.rect.topleft = (100, 450)
