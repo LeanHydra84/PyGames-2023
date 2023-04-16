@@ -1,13 +1,18 @@
 import pygame
 
 class BasicTextObject(pygame.sprite.Sprite):
-    def __init__(self, text: str, font: pygame.font.Font, color = pygame.Color(255, 255, 255, 255)):
+    def __init__(self, font: pygame.font.Font, color = pygame.Color(255, 255, 255, 255)):
         pygame.sprite.Sprite.__init__(self)
 
-        self.text = text
         self.font = font
+        self.color = color
 
-        self.image = font.render(text, True, color)
+        self.set_text("")
+
+    def set_text(self, text):
+
+        self.text = text
+        self.image = self.font.render(text, True, self.color)
         self.rect = self.image.get_rect()
 
 

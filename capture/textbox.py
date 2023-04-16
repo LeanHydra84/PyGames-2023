@@ -1,5 +1,5 @@
 import capture.capturestate as capturestate
-import capture.textobject as to
+import rendering.textobject as to
 import pygame
 
 class Textbox(capturestate.CaptureState):

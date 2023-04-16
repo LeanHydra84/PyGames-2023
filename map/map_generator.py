@@ -1,8 +1,8 @@
 import pygame
 import json
-
 import random
-#from random import choice
+
+from map.spawner import spawn
 
 rooms = []
 hallways = []
@@ -45,6 +45,7 @@ class RoomArchetype(pygame.sprite.Sprite):
 
         self.doorPos = [p * SCALE for p in obj['doorpos']]
         self.doorForward = obj['doorforward']
+        self.spawns = obj['spawns']
 
 class ROOMLOADER:
     def __init__(self):
@@ -82,6 +83,7 @@ class BuildDetails:
     def __init__(self, group):
         self.uncappedEnds = 0
         self.deadEnds = []
+        self.spawns = []
         self.group = group
 
 def rotate_90(coord: list):
@@ -191,7 +193,15 @@ def _recurse_generate_hallways(details: BuildDetails, resource, pos, direction, 
         details.uncappedEnds += 1
         _recurse_generate_hallways(details, resource, newPos, d, depth - 1, nextr)
 
-def try_place_room(group, pos, direction, archetype: RoomArchetype):
+def add_spawns(spawns, localCenter, spawnlist: list):
+    for s in spawns:
+        adjustpos = localCenter + [p * SCALE for p in s['position']]
+        chance = s['chance']
+
+        if chance == 1 or random.random() < chance:
+            spawnlist.append((s['type'], adjustpos))
+
+def try_place_room(group, pos, direction, archetype: RoomArchetype, details):
     revDirection = [-direction[0], -direction[1]]
     
     forward = archetype.doorForward.copy()
@@ -201,7 +211,7 @@ def try_place_room(group, pos, direction, archetype: RoomArchetype):
     COLLIDER = pygame.transform.rotate(archetype.collider, orientation * 90)
 
     localdoorpos = archetype.doorPos.copy()
-    for i in range(orientation):
+    for _ in range(orientation):
         rotate_90(localdoorpos)
 
     localizedCenter = pygame.Vector2(pos) - pygame.Vector2(localdoorpos)
@@ -211,6 +221,7 @@ def try_place_room(group, pos, direction, archetype: RoomArchetype):
         return False
     else:
         group.add(newroom)
+        add_spawns(archetype.spawns, localizedCenter, details.spawns)
         return True
 
     
@@ -221,7 +232,6 @@ class Mapv2:
     def __init__(self):
         self.group = pygame.sprite.Group()
         self.details = BuildDetails(self.group)
-        #self.rooms = []
 
     def get_collision_at_point(self, point) -> bool: # True means valid position, false means collision
         for x in self.group:
@@ -239,6 +249,9 @@ class Mapv2:
             return collist
         return None
 
+    def spawn_all(self, state):
+        for s in self.details.spawns:
+            spawn(s[0], s[1], state)
 
 def createmap(depth):
     attempts = 0
@@ -251,7 +264,7 @@ def createmap(depth):
         setflag = True
         startcoord = (0, -15 * SCALE)
 
-        try_place_room(nmap.group, startcoord, (0, 1), resource.rooms.pop(0))
+        try_place_room(nmap.group, startcoord, (0, 1), resource.rooms.pop(0), nmap.details)
 
         _recurse_generate_hallways(nmap.details, resource, startcoord, (0, -1), depth, None)
         if nmap.details.uncappedEnds < len(resource.rooms):
@@ -265,7 +278,7 @@ def createmap(depth):
 
             setflag = False
             for end in nmap.details.deadEnds:
-                success = try_place_room(nmap.group, end[0], end[1], room)
+                success = try_place_room(nmap.group, end[0], end[1], room, nmap.details)
                 if success:
                     nmap.details.deadEnds.remove(end)
                     setflag = True

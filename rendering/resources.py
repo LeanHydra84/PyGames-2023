@@ -17,6 +17,7 @@ class GlobalResources:
         self.HALLMONITOR = AnimationCollection("assets\\hallmonitor.json", self.scale)
         self.TEACHER = AnimationCollection("assets\\teacher.json", self.scale / 2)
         self.FEET = AnimationCollection("assets\\feet.json", self.scale)
+        self.MRS_FLIPS = AnimationCollection("assets\\mrs_flips.json", self.scale / 2)
 
         # STATIC SPRITES
         self.DEADBODY_TESTSPRITE = pygame.transform.scale_by( pygame.image.load("assets\\shespriteonmy\\DEBUG_X.png").convert_alpha(), self.scale )

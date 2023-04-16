@@ -93,8 +93,6 @@ def main():
         clock.tick(60)
         pygame.display.flip()
         
-    print("Quit Gracefully")
-
 
 if __name__ == "__main__":
     main()
