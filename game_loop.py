@@ -56,16 +56,18 @@ def game_loop(state, screen):
     layers.add_to("Feet", state.player.feet)
 
     state.map.spawn_all(state)
-    # TEST PICKUP
 
+    # TEST PICKUP
     traypickup = Pickup(state.RESOURCES.TRAY, "Tray", (100, 0), state.RESOURCES.TRAY_HINT)
     layers.add_to("Interactable", traypickup)
 
+    rulerpickup = Pickup(state.RESOURCES.RULER, "Ruler", (-150, 0), None)
+    layers.add_to("Interactable", rulerpickup)
 
     state.pauseMenu = build_pause_menu(state, 5)
     state.text = Textbox(state)
 
-    timer = FormattedCountdownTimer(100, pygame.font.SysFont("Arial", 35))
+    timer = FormattedCountdownTimer(120, pygame.font.SysFont("Arial", 35))
     layers.add_to("Character", timer.timeRenderer)
 
     interactkey = False
@@ -80,7 +82,7 @@ def game_loop(state, screen):
                 return False
 
             if event.type == pygame.KEYDOWN:
-                if not state.player.alive():
+                if event.key == pygame.K_SPACE and not state.player.alive():
                     state.running = False
 
                 if event.key == pygame.K_e:
@@ -142,6 +144,9 @@ def game_loop(state, screen):
                     c.interact(state, interactkey)
 
             state.camera = vec_round(state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed))
+
+            if timer.is_time_up():
+                state.player.kill_me(state)
 
         interactkey = False
 

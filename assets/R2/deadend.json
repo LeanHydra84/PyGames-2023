@@ -4,5 +4,12 @@
     "collider": "assets\\R2\\DEAD_END_C.png",
     "exits": [
         [1, 0]
+    ],
+    "spawns": [
+        {
+            "type": "HallMonitor",
+            "position": [0, 0],
+            "chance": 0.15
+        }
     ]
 }

@@ -19,3 +19,6 @@ class FormattedCountdownTimer:
         if textstr != self.timeRenderer.text:
             self.timeRenderer.set_text(textstr)
             self.timeRenderer.rect.topleft = (10, 10)
+
+    def is_time_up(self) -> bool:
+        return pygame.time.get_ticks() - self.alphaTime > self.betaTime

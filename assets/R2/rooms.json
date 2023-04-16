@@ -11,11 +11,6 @@
                 "type": "MrsFlips",
                 "position": [17, -10],
                 "chance": 1
-            },
-            {
-                "type": "HallMonitor",
-                "position": [-17, 10],
-                "chance": 0.5
             }
         ]
     },

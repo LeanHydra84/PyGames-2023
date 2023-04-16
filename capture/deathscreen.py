@@ -1,4 +1,6 @@
 import pygame
+
+from capture.menu import OverlayMenu
 from capture.capturestate import CaptureState
 
 def lerp(f1, f2, frac):
@@ -49,3 +51,21 @@ class DeathScreen(CaptureState):
 
             self.deathText.image = pygame.transform.scale_by(self.static_image, scale)
             self.deathText.rect = self.deathText.image.get_rect(center=self.centerScreen)
+
+
+def create_death_screen(state) -> OverlayMenu:
+    death = OverlayMenu(state)
+    death.multColor = pygame.Color(100, 100, 100)
+    
+    dtext = pygame.sprite.Sprite()
+    dtext.image = pygame.transform.scale_by(state.RESOURCES.DEATH_TEXT, 3)
+    dtext.rect = dtext.image.get_rect(center=state.centerScreen)
+    death.add_static(dtext)
+    
+    font: pygame.font.Font = state.RESOURCES.FONT_25
+    coinSpr = pygame.sprite.Sprite()
+    coinSpr.image = font.render("Insert coin to continue... (Or press SPACE)", True, pygame.Color(255, 255, 255))
+    coinSpr.rect = coinSpr.image.get_rect(bottomleft=(30, state.screensize[1] - 30))
+    death.add_static(coinSpr, True)
+
+    return death

@@ -13,6 +13,7 @@ class StateGraph:
         self._state = 0
         self.curframe = [0, 0]
         self.frametick = 0
+        self.idle = 0
         self.setup_surface()
         self.calculate_active_frame()
 
@@ -47,6 +48,12 @@ class StateGraph:
         newRect.y = self.curframe[1] * self.rect.h
         self.activeFrame.blit(self.states[self._state].img, (0, 0), newRect)
 
+    def set_idle(self, val):
+        self.idle = val
+
+    def is_idle(self) -> bool:
+        return self._state == self.idle
+
     def increment_frames(self):
         if(self.curframe[0] >= self.sheetdim[0]):
             if self.curframe[1] >= self.sheetdim[1]:
@@ -55,7 +62,10 @@ class StateGraph:
                 # On animation complete
                 # Check if state should recalc
                 if self.transfergraph[self._state] != self._state:
-                    self.force_state(self.transfergraph[self._state])
+                    transferstate = self.transfergraph[self._state]
+                    if transferstate == "Idle":
+                        transferstate = self.idle
+                    self.force_state(transferstate)
             else:
                 self.curframe[0] = 0
                 self.curframe[1] += 1

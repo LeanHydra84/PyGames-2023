@@ -1,11 +1,32 @@
 [
     {
+        "name": "Hallway Base",
+        "path": "assets\\R2\\HW_BASE.png",
+        "collider": "assets\\R2\\HW_BASE_C.png",
+        "exits": [
+            [0, 1], [1, 0], [-1, 0]
+        ],
+        "spawns": []
+    },
+    {
         "name": "4 Way",
         "path": "assets\\R2\\4WAY.png",
         "collider": "assets\\R2\\4WAY_C.png",
         "exits": [
             [-1, 0], [1, 0],
             [0, -1], [0, 1]
+        ],
+        "spawns": [
+            {
+                "type": "Either",
+                "position": [8, 0],
+                "chance": 0.8
+            },
+            {
+                "type": "HallMonitor",
+                "position": [-8, 0],
+                "chance": 0.8
+            }
         ]
     },
     {
@@ -15,6 +36,18 @@
         "exits": [
             [-1, 0], [1, 0],
             [0, 1]
+        ],
+        "spawns": [
+            {
+                "type": "HallMonitor",
+                "position": [-8, 0],
+                "chance": 0.8
+            },
+            {
+                "type": "Either",
+                "position": [8, 0],
+                "chance": 0.8
+            }
         ]
     },
     {
@@ -23,6 +56,13 @@
         "collider": "assets\\R2\\2WAY_SHORT_C.png",
         "exits": [
             [-1, 0], [1, 0]
+        ],
+        "spawns": [
+            {
+                "type": "HallMonitor",
+                "position": [0, 0],
+                "chance": 0.8
+            }
         ]
     },
     {
@@ -32,7 +72,14 @@
         "exits": [
             [-1, 0], [1, 0]
         ],
-        "disabled": true
+        "disabled": true,
+        "spawns": [
+            {
+                "type": "HallMonitor",
+                "position": [0, 0],
+                "chance": 0.8
+            }
+        ]
     },
     {
         "name": "Right Turn",
@@ -40,6 +87,13 @@
         "collider": "assets\\R2\\2WAY_90_C.png",
         "exits": [
             [0, -1], [1, 0]
+        ],
+        "spawns": [
+            {
+                "type": "Either",
+                "position": [0, 0],
+                "chance": 0.75
+            }
         ]
     }
 ]

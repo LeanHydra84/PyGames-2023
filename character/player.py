@@ -32,10 +32,8 @@ class Player(pygame.sprite.Sprite):
         self.shielded = False
 
         # ITEMS
-
         self.hasTray = False
         self.hasRuler = False
-        self.answerCount = 0
 
 
     def pickup_item(self, type):
@@ -43,6 +41,8 @@ class Player(pygame.sprite.Sprite):
             self.hasTray = True
         elif type == "Ruler":
             self.hasRuler = True
+            self.stategraph.set_idle(5)
+            self.stategraph.force_state(5)
 
     def forward(self) -> pygame.Vector2:
         ward = pygame.Vector2.from_polar((1, self.rotation))
@@ -50,14 +50,16 @@ class Player(pygame.sprite.Sprite):
         return ward
     
     def attack_pressed(self, state):
-        if self.stategraph.state() == 0:
-            self.stategraph.force_state(1)
+
+        # Janky
+        attackRadius, anim = (30, 1) if self.stategraph.state() == 0 else (60, 6) if self.stategraph.state() == 5 and self.hasRuler else (0, -1)
+
+        if attackRadius != 0:
+            self.stategraph.force_state(anim)
 
             enemygroup: pygame.sprite.Group = state.renderLayers.find("Enemies").layer
-            
-            attackRadius = 30
-            attackdist = 30
 
+            attackdist = 30
             attackPos: pygame.Vector2 = self.position + (self.forward() * attackdist)
 
             # Debug attack circle
@@ -84,12 +86,12 @@ class Player(pygame.sprite.Sprite):
             return
         sv = self.stategraph.state()
         if boolval:
-            if sv == 0:
+            if self.stategraph.is_idle():
                 self.stategraph.force_state(2)
                 self.shielded = True
         else:
             if sv == 3 or sv == 2:
-                self.stategraph.force_state(4)
+                self.stategraph.force_state(self.stategraph.idle)
                 self.shielded = False
 
     def hit_by_enemy_attack(self, srcDir: pygame.Vector2, state) -> bool:
@@ -114,7 +116,10 @@ class Player(pygame.sprite.Sprite):
         newspr = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, self.position)
         state.renderLayers.add_to("DeadBodies", newspr)
 
-        death.DeathScreen(state, state.RESOURCES.DEATH_TEXT, 100, 5, 2).togglecapture()
+        #death.DeathScreen(state, state.RESOURCES.DEATH_TEXT, 100, 5, 2).togglecapture()
+        death.create_death_screen(state).togglecapture()
+        state.pause()
+        state.RESOURCES.SND_DEATH_SOUND.play()
 
     def update(self, state):
         
@@ -139,16 +144,6 @@ class Player(pygame.sprite.Sprite):
                 mv *= 1.7
 
             adjPos = self.position + state.camera
-
-            # room = state.map.get_inside(self)
-            # if room != None:
-            #     if graph.check_collider(room,   [int(adjPos.x + mv.x), int(adjPos.y + mv.y)]):
-            #         self.position += mv
-            #     elif graph.check_collider(room, [int(adjPos.x + mv.x), int(adjPos.y)]):
-            #         self.position.x += mv.x
-            #     elif graph.check_collider(room, [int(adjPos.x), int(adjPos.y + mv.y)]):
-            #         self.position.y += mv.y
-
             if state.map.get_collision_at_point(adjPos + mv):
                 self.position += mv
             elif state.map.get_collision_at_point(adjPos + pygame.Vector2(mv.x, 0)):
@@ -176,17 +171,3 @@ class Player(pygame.sprite.Sprite):
     def kill(self):
         super().kill()
         self.feet.kill()
-
-
-# DEPRECATED
-def createplayer(scale) -> Player:
-    img = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\girl1.png").convert_alpha(), scale)
-    attack = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\attack.png").convert_alpha(), scale)
-    feet = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\leg2.png").convert_alpha(), scale / 1.5)
-
-    sheet = ( graph.ImageBase(img, (2, 0), 25), graph.ImageBase(feet, (0, 0), 21), graph.ImageBase(attack, (3, 0), 2) )
-    char = Player(sheet)
-    char.speed = 3
-    char.position = pygame.Vector2(500, 500)
-
-    return char

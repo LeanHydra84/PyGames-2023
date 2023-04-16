@@ -22,6 +22,10 @@ def init_teacher_atpos(state, pos):
     state.renderLayers.add_to("Feet", en.feet)
 
 def spawn(type: str, pos, state):
+
+    if type == "Either":
+        type = rand.choice(["HallMonitor", "Teacher"])
+
     if type == "MrsFlips":
         char = MrsFlips(state.RESOURCES.MRS_FLIPS, pos)
         state.renderLayers.add_to("Interactable", char)
@@ -31,3 +35,5 @@ def spawn(type: str, pos, state):
         init_teacher_atpos(state, pos)
     else:
         pass # Pickups using type == pickupname????
+
+    return type

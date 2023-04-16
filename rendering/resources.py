@@ -45,6 +45,9 @@ class GlobalResources:
         self.SND_PICKUP_ITEM.set_volume(0.5)
         self.SND_DEATH_SOUND.set_volume(0.5)
 
+        # FONT
+        self.FONT_25 = pygame.font.SysFont("Arial", 25)
+
     def release(self):
         del self.PLAYER
         del self.HALLMONITOR

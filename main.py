@@ -92,7 +92,7 @@ def main():
         # End frame
         clock.tick(60)
         pygame.display.flip()
-        
+
 
 if __name__ == "__main__":
     main()

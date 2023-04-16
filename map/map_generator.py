@@ -22,6 +22,7 @@ class HallwayArchetype:
         self.image = pygame.transform.scale_by(pygame.image.load(obj['path']).convert_alpha(), SCALE)
         self.collider = pygame.transform.scale_by(pygame.image.load(obj['collider']).convert_alpha(), SCALE)
         self.exits = obj['exits']
+        self.spawns = obj['spawns']
 
 
 class HallwayActual(pygame.sprite.Sprite):
@@ -86,6 +87,9 @@ class BuildDetails:
         self.spawns = []
         self.group = group
 
+        self.hm_spawnquota = 15
+        self.tch_spawnquota = 5
+
 def rotate_90(coord: list):
     # Clockwise rotation: [x, y] ==> [y, -x]
     temp = coord[0]
@@ -142,7 +146,7 @@ def place_dead_end(map, resource, pos, direction):
     map.group.add(hw)
 
 
-def _recurse_generate_hallways(details: BuildDetails, resource, pos, direction, depth, lastroom):
+def _recurse_generate_hallways(details: BuildDetails, resource, pos, direction, depth, lastroom, forceroom = None):
     if depth <= 0:
         details.deadEnds.append( (pos, direction) )
         return
@@ -151,10 +155,19 @@ def _recurse_generate_hallways(details: BuildDetails, resource, pos, direction, 
     if nextr == lastroom:
         nextr = resource.get_hallway() # Retakes, as to lower the chances of getting two in a row
 
-    _exits: list = [p.copy() for p in nextr.exits]
+    _exits = [p.copy() for p in nextr.exits]
     chosenexit = random.choice(_exits)
     _exits.remove(chosenexit)
-    
+
+    # Yes, I know this is duplicate code that will run almost the same thing twice and replace its results.
+    # This is fine because forceroom should only ever be nonnull once. Also this is due tomorrow so we're getting janky
+    if forceroom != None:
+        # forceroom is super janky. it's a tuple with [0] = a roomarchetype and [1] = the index of the exit to use
+        nextr = forceroom[0]
+        _exits = [p.copy() for p in nextr.exits]
+        chosenexit = _exits[forceroom[1]]
+        _exits.remove(chosenexit)
+        
 
     revDirection = [-direction[0], -direction[1]]
 
@@ -178,6 +191,7 @@ def _recurse_generate_hallways(details: BuildDetails, resource, pos, direction, 
         return
 
     details.group.add(hw)
+    add_spawns(nextr.spawns, pygame.Vector2(hw.rect.center), details.spawns, orientationCounter)
 
     # Rotate each exit from _exits to match orientation,
     for d in _exits:
@@ -193,13 +207,17 @@ def _recurse_generate_hallways(details: BuildDetails, resource, pos, direction, 
         details.uncappedEnds += 1
         _recurse_generate_hallways(details, resource, newPos, d, depth - 1, nextr)
 
-def add_spawns(spawns, localCenter, spawnlist: list):
+def add_spawns(spawns, localCenter, spawnlist: list, orientation):
     for s in spawns:
-        adjustpos = localCenter + [p * SCALE for p in s['position']]
+        rotatedoffset = [p * SCALE for p in s['position']]
+
+        for i in range(orientation):
+            rotate_90(rotatedoffset)
+
+        adjustpos = localCenter + rotatedoffset
         chance = s['chance']
 
-        if chance == 1 or random.random() < chance:
-            spawnlist.append((s['type'], adjustpos))
+        spawnlist.append([s['type'], adjustpos, chance])
 
 def try_place_room(group, pos, direction, archetype: RoomArchetype, details):
     revDirection = [-direction[0], -direction[1]]
@@ -221,12 +239,12 @@ def try_place_room(group, pos, direction, archetype: RoomArchetype, details):
         return False
     else:
         group.add(newroom)
-        add_spawns(archetype.spawns, localizedCenter, details.spawns)
+        add_spawns(archetype.spawns, localizedCenter, details.spawns, orientation)
         return True
 
-    
-
-
+def _tuple_sort_by_distance(sp):
+    tup = sp[1]
+    return tup[0]*tup[0] + tup[1]*tup[1]
 
 class Mapv2:
     def __init__(self):
@@ -250,8 +268,32 @@ class Mapv2:
         return None
 
     def spawn_all(self, state):
-        for s in self.details.spawns:
-            spawn(s[0], s[1], state)
+        sortedspawns = sorted(self.details.spawns, key=_tuple_sort_by_distance)
+
+        hmcount = self.details.hm_spawnquota
+        trcount = self.details.tch_spawnquota
+
+        print(hmcount, trcount)
+
+
+        # Guarantee spawns for first N monitors and teachers
+        for s in sortedspawns:
+            if s[0] == "HallMonitor" and hmcount > 0:
+                s[2] = 1
+                hmcount -= 1
+            elif s[0] == "Teacher" and trcount > 0:
+                s[2] = 1
+                trcount -= 1
+            elif s[0] == "Either" and trcount > 0:
+                s[0] = "Teacher"
+                s[2] = 1
+                trcount -= 1
+
+        print(hmcount, trcount)
+
+        for s in sortedspawns:
+            if random.random() < s[2]:
+                spawn(s[0], s[1], state)
 
 def createmap(depth):
     attempts = 0
@@ -265,8 +307,10 @@ def createmap(depth):
         startcoord = (0, -15 * SCALE)
 
         try_place_room(nmap.group, startcoord, (0, 1), resource.rooms.pop(0), nmap.details)
+        hallwaybase = resource.hallways.pop(0)
 
-        _recurse_generate_hallways(nmap.details, resource, startcoord, (0, -1), depth, None)
+        _recurse_generate_hallways(nmap.details, resource, startcoord, (0, -1), depth + 1, None, (hallwaybase, 0))
+
         if nmap.details.uncappedEnds < len(resource.rooms):
             attempts += 1
             continue
