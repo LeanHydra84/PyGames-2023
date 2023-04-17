@@ -85,6 +85,8 @@ class Teacher(eb.EnemyBase):
     def attack(self, state):
         self.attackTime = 0
 
+        self.graph.force_state(1)
+
         state.RESOURCES.SND_HADOUKEN.play()
 
         spr = pygame.transform.rotate(state.RESOURCES.PROJECTILE, self.rotation)

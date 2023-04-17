@@ -35,7 +35,26 @@ class Computer(pygame.sprite.Sprite):
         state.map.details.spawnIndex += 1
         state.map.spawn_all(state, True)
 
+        convo = None
+        wincounter = state.answer_count()
+        match wincounter:
+            case 1:
+                convo = "first_answer_get"
+            case 2:
+                convo = "second_answer_get"
+            case 3:
+                convo = "third_answer_get"
+
+        if convo == None:
+            return
+        
+        state.text.begin_conversation(convo)
+        state.text.togglecapture()
+        state.pause()
+
     def interact(self, state, ePress):
         if ePress and not self.used:
             self.finish_minigame(state)
             self.used = True
+            return True
+        return self.used

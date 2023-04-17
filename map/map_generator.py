@@ -318,6 +318,8 @@ def createmap(depth):
             continue
         
         roomcopy = resource.rooms.copy()
+        randomizedDeadends = random.sample(nmap.details.deadEnds, len(nmap.details.deadEnds))
+
         while len(roomcopy) > 0:
             room = random.choice(roomcopy)
             roomcopy.remove(room)
@@ -326,14 +328,14 @@ def createmap(depth):
             for end in nmap.details.deadEnds:
                 success = try_place_room(nmap.group, end[0], end[1], room, nmap.details)
                 if success:
-                    nmap.details.deadEnds.remove(end)
+                    randomizedDeadends.remove(end)
                     setflag = True
                     break
 
             if not setflag:
                 break
 
-        for end in nmap.details.deadEnds:
+        for end in randomizedDeadends:
             place_dead_end(nmap, resource, end[0], end[1])
 
         if not setflag:

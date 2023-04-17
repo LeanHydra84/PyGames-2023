@@ -98,3 +98,5 @@ class Pickup(pygame.sprite.Sprite):
         if self.hint != None:
             hintobj = ItemHint(self.hint, 240)
             state.renderLayers.add_to("Character", hintobj) # Character layer on top, so why not right
+
+        return True

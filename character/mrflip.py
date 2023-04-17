@@ -27,8 +27,11 @@ class MrFlip(pygame.sprite.Sprite):
 
         if state.win_condition():
             script = "on_win"
+            state.winGame = True
         if self.interaction_count == 0:
             script = "startgame"
+        if self.interaction_count == 1:
+            script = "in_game_hint"
 
         state.text.begin_conversation(script)
         state.text.togglecapture()
@@ -38,3 +41,4 @@ class MrFlip(pygame.sprite.Sprite):
     def interact(self, state, shouldInteract):
         if shouldInteract:
             self.converse_script(state)
+        return False

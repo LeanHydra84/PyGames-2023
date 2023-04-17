@@ -36,4 +36,4 @@ class Projectile(pygame.sprite.Sprite):
 
 
     def interact(self, state, _):
-        pass
+        return True

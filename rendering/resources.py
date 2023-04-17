@@ -28,10 +28,16 @@ class GlobalResources:
         self.COMPUTER = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\computer.png").convert_alpha(), self.scale)
         self.COMPUTER_OFF = pygame.transform.scale_by(pygame.image.load("assets\\shespriteonmy\\computer_off.png").convert_alpha(), self.scale)
 
+        self.E_PROMPT = pygame.transform.scale_by(pygame.image.load("assets\\menu\\eprompt.png").convert_alpha(), self.scale)
+
         # STATIC SPRITES
         self.DEADBODY_TESTSPRITE = pygame.transform.scale_by( pygame.image.load("assets\\shespriteonmy\\DEBUG_X.png").convert_alpha(), self.scale )
+        self.HM_UNC = pygame.transform.scale_by( pygame.image.load("assets\\shespriteonmy\\hallx.png").convert_alpha(), self.scale / 2.5)
+        self.TC_UNC = pygame.transform.scale_by( pygame.image.load("assets\\shespriteonmy\\teacherx.png").convert_alpha(), self.scale / 2.5)
+
         self.PROJECTILE = pygame.transform.scale_by( pygame.image.load("assets\\shespriteonmy\\projectile.png").convert_alpha(), self.scale )
         self.DEATH_TEXT = pygame.image.load("assets\\menu\\deathtext.png").convert_alpha()
+        self.WINNINGSCREEN = pygame.image.load("assets\\menu\\winningmed.png").convert()
 
         # ITEMS
         self.TRAY = pygame.transform.scale_by(pygame.image.load("assets\\items\\tray.png").convert_alpha(), self.scale * 0.75)
@@ -62,8 +68,3 @@ class GlobalResources:
         self.SND_TONK.set_volume(1 * val)
         self.SND_PICKUP_ITEM.set_volume(0.5 * val)
         self.SND_DEATH_SOUND.set_volume(0.25 * val)
-
-    def release(self):
-        del self.PLAYER
-        del self.HALLMONITOR
-        del self.FEET

@@ -6,20 +6,30 @@ import map.map_generator as mapgen
 from rendering.layerManager import LayerManager
 from rendering.hueshift import HueShift
 from rendering.timer import FormattedCountdownTimer
-
-from character.hallmonitor import HallMonitor
-from character.teacher import Teacher
-from character.pickup import Pickup
+from rendering.stategraph import SingleStateGraph
+from rendering.win_game_scene import win_game_scene
 
 from character.player import Player
 
 from capture.menu import build_pause_menu
 from capture.textbox import Textbox
 
+
 lerpSpeed = 5/60
 
 playerPickupDistance = 50**2
 
+class E_Prompt(pygame.sprite.Sprite):
+    def __init__(self, sheet, dim):
+        pygame.sprite.Sprite.__init__(self)
+        
+        self.graph = SingleStateGraph(sheet, dim, 25)
+        self.image = self.graph.activeFrame
+        self.rect = self.image.get_rect(centerx=(1280/2), bottom=(720-10))
+    
+    def update(self, _):
+        self.graph.tick()
+        self.image = self.graph.activeFrame
 
 
 # Helper function used to round the lerped return of the camera pos -- keeping that pixel-aligned stops collision issues
@@ -65,6 +75,7 @@ def game_loop(state, screen: pygame.Surface):
 
     state.map.spawn_all(state)
 
+    eprompt = E_Prompt(state.RESOURCES.E_PROMPT, [1, 0])
 
     pygame.mixer.music.load("assets\\music\\in_game.wav")
     pygame.mixer.music.play(-1)
@@ -95,6 +106,8 @@ def game_loop(state, screen: pygame.Surface):
                     if state.captureState == None or state.captureState == state.pauseMenu:
                         state.pauseMenu.togglecapture()
                         state.togglepause()
+                    if state.captureState == state.text:
+                        state.text.end_text()
 
                 
                 if event.key == pygame.K_w:
@@ -138,13 +151,27 @@ def game_loop(state, screen: pygame.Surface):
 
         # Update
         if not state.paused:
+            if state.winGame:
+                return win_game_scene(screen, state.RESOURCES.WINNINGSCREEN)
+
+
             layers.update(state)
             timer.update()
 
             interactableNear = pygame.sprite.spritecollide(state.player, layers.find("Interactable").layer, False)
+
+            need_e_prompt = False
             for c in interactableNear:
                 if state.player.position.distance_squared_to(c.position) < playerPickupDistance:
-                    c.interact(state, interactkey)
+                    if not c.interact(state, interactkey):
+                        need_e_prompt = True
+
+            if need_e_prompt:
+                if not eprompt.alive():
+                    layers.add_to("Character", eprompt)
+            else:
+                eprompt.kill()
+                    
 
             state.camera = vec_round(state.camera.lerp(-state.player.position + state.centerScreen, lerpSpeed))
 

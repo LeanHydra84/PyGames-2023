@@ -12,6 +12,12 @@
             "path": "assets\\menu\\hannaclose.png",
             "name": "Hanna",
             "color": [232, 88, 208]
+        },
+        {
+            "handle": "hm",
+            "path": "assets\\menu\\hallclose.png",
+            "name": "Hall Monitor",
+            "color": [255, 40, 40]
         }
     ],
 
@@ -32,6 +38,32 @@
         "in_game_neutral": [
             ["flips", "Great, you're back. Take\nyour seat and we'll start."],
             ["YOU", "Uh... not just yet Mr. Flip!"]
+        ],
+        "in_game_hint": [
+            ["flips", "Did you know there are two\nrooms in this school that\ncontain powerups?"],
+            ["YOU", "... What?"],
+            ["flips", "Yeah, the cafeteria and the\nspare classroom. Check them out\nif you have some time"],
+            ["YOU", "... Okay man. Sure thing."]
+        ],
+
+        "first_answer_get": [
+            ["hm", "Hey! You can't be here!"],
+            ["YOU", "Too late!"],
+            ["hm", "Get back to class...\nOr I'll get a teacher!"],
+            ["YOU", "I've got places to be man!"],
+            ["hm", "That does it! TEACHER!!!!"]
+        ],
+
+        "second_answer_get": [
+            ["hm", "Somebody needs to stop her!"],
+            ["YOU", "I'm too fast!"],
+            ["hm", "Aahhhhhh!!!"]
+        ],
+
+        "third_answer_get": [
+            ["hm", "That does it!"],
+            ["hm", "I'll never let you get back to class now!"],
+            ["YOU", "Uh oh... I've gotta go!"]
         ]
     }
 

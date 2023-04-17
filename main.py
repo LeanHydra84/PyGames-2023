@@ -12,7 +12,7 @@ class State: # Gamestate handler for all things gamings
         self.keys = [False, False, False, False, False]
         self.running = True
         self.captureState = None
-
+        self.winGame = False
         self.camera = pygame.Vector2(self.centerScreen)
 
         self.answers = [False, False, False]
@@ -36,7 +36,16 @@ class State: # Gamestate handler for all things gamings
                 self.answers[2] = True
     
     def win_condition(self) -> bool:
+        return True
         return self.answers[0] and self.answers[1] and self.answers[2]
+    
+    def answer_count(self) -> int:
+        count = 0
+        for x in self.answers:
+            if x == True:
+                count += 1
+
+        return count
 
 class MenuState:
     def __init__(self):
@@ -51,6 +60,8 @@ class MenuState:
 
 def main():
     
+    print(pygame.ver)
+
     pygame.init()
     pygame.mixer.init()
 

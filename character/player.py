@@ -8,6 +8,9 @@ import capture.menu as menu
 from math import acos
 from collections import deque
 
+from character.hallmonitor import HallMonitor
+from character.teacher import Teacher
+
 MAXTIME = 5
 max_enemies_per_hit = 2
 
@@ -72,7 +75,14 @@ class Player(pygame.sprite.Sprite):
                     deadpos = spr.position
                     spr.kill()
 
-                    body = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, deadpos)
+                    bsprite = state.RESOURCES.DEADBODY_TESTSPRITE
+                    if type(spr) == HallMonitor:
+                        bsprite = state.RESOURCES.HM_UNC
+                    elif type(spr) == Teacher:
+                        bsprite = state.RESOURCES.TC_UNC
+
+                    
+                    body = unconscious.Unconscious(bsprite, deadpos)
                     state.renderLayers.add_to("DeadBodies", body)
 
                     hitcount += 1

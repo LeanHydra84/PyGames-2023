@@ -36,14 +36,18 @@ class Textbox(capturestate.CaptureState):
         person: ConversationPartner = self.convoManger.get_partner(line[0])
 
         # sprite, name, color
+        self.nameBox.color = person.color
         self.nameBox.set_text(person.name)
+
 
         self.textObject = to.MultilineWritingTextObject(line[1].split('\n'), self.font, 3, person.color)
         self.textObject.rect.center = self.brRect.center
         
         self.headBox.image = person.sprite
         self.headBox.rect = person.sprite.get_rect(centery=self.brRect.centery, right=(self.brRect.left - 10))
-        self.nameBox.rect.bottomleft = self.headBox.rect.topleft
+        
+        self.nameBox.rect.bottom = self.headBox.rect.top
+        self.nameBox.rect.centerx = self.headBox.rect.centerx
 
         self.group.add(self.textObject)
 
@@ -59,7 +63,6 @@ class Textbox(capturestate.CaptureState):
         self.togglecapture()
         self.reference_state.unpause()
         self.textObject.kill()
-        self.nameBox.kill()
         self.textObject = None
 
     def get_next(self):

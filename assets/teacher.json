@@ -4,5 +4,11 @@
         "dim": [2, 0],
         "frames": 25,
         "transition": 0
+    },
+    {
+        "path": "assets\\shespriteonmy\\teacherattack.png",
+        "dim": [2, 0],
+        "frames": 6,
+        "transition": 0
     }
 ]
