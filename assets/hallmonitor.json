@@ -6,9 +6,9 @@
         "transition": 0
     },
     {
-        "path": "assets\\shespriteonmy\\hallmonitor_debugattack.png",
-        "dim": [3, 0],
-        "frames": 2,
+        "path": "assets\\shespriteonmy\\babyponch.png",
+        "dim": [2, 0],
+        "frames": 4,
         "transition": 0
     }
 ]

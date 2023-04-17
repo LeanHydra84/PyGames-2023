@@ -86,6 +86,7 @@ class BuildDetails:
         self.deadEnds = []
         self.spawns = []
         self.group = group
+        self.spawnIndex = 0
 
         self.hm_spawnquota = 15
         self.tch_spawnquota = 5
@@ -267,33 +268,34 @@ class Mapv2:
             return collist
         return None
 
-    def spawn_all(self, state):
+    def spawn_all(self, state, onlyEnemies = False):
         sortedspawns = sorted(self.details.spawns, key=_tuple_sort_by_distance)
 
         hmcount = self.details.hm_spawnquota
-        trcount = self.details.tch_spawnquota
 
-        print(hmcount, trcount)
+        #trcount = self.details.tch_spawnquota if self.details.spawnIndex > 1 else self.details.tch_spawnquota // 2
 
-
-        # Guarantee spawns for first N monitors and teachers
+        # Guarantee spawns for first N monitors and teachers, by distance from spawn
         for s in sortedspawns:
             if s[0] == "HallMonitor" and hmcount > 0:
                 s[2] = 1
                 hmcount -= 1
-            elif s[0] == "Teacher" and trcount > 0:
-                s[2] = 1
-                trcount -= 1
-            elif s[0] == "Either" and trcount > 0:
-                s[0] = "Teacher"
-                s[2] = 1
-                trcount -= 1
-
-        print(hmcount, trcount)
 
         for s in sortedspawns:
+            type = s[0]
+
+            if onlyEnemies and not (type == "HallMonitor" or type == "Teacher" or type == "Either"):
+                continue
+
+            if self.details.spawnIndex == 0:
+                if s[0] == "Teacher":
+                    continue
+                if s[0] == "Either":
+                    type = "HallMonitor"
+
+
             if random.random() < s[2]:
-                spawn(s[0], s[1], state)
+                spawn(type, s[1], state)
 
 def createmap(depth):
     attempts = 0

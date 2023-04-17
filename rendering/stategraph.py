@@ -78,14 +78,46 @@ class StateGraph:
             self.frametick = 0
             self.increment_frames()
             self.calculate_active_frame()
-        
-def check_collider(room, point: list[int]) -> bool:
 
-    for col in room:
-        collider = col.collider
-        colrect = col.rect
-        adjP = (point[0] - colrect.x, point[1] - colrect.y)
-        if adjP[0] < colrect.w and adjP[0] >= 0 and adjP[1] < colrect.h and adjP[1] >= 0:
-            if collider.get_at(adjP).r != 255:
-                return False
-    return True
+
+class SingleStateGraph:
+    def __init__(self, image, dimensions, speed):
+        self.sheet = image
+        self.dimensions = dimensions
+        
+        self.frameTimer = speed
+        self.curframe = [0, 0]
+        self.frametick = 0
+
+        sheetrect = self.sheet.get_rect()
+        self.rect = pygame.Rect((0, 0), (sheetrect.w / (self.dimensions[0] + 1), sheetrect.h / (self.dimensions[1] + 1)))
+
+        self.activeFrame = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+
+        self.calculate_active_frame()
+
+
+    def calculate_active_frame(self):
+        self.activeFrame.fill(pygame.Color(0, 0, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        newRect = pygame.Rect(self.rect)
+        newRect.x = self.curframe[0] * self.rect.w
+        newRect.y = self.curframe[1] * self.rect.h
+        self.activeFrame.blit(self.sheet, (0, 0), newRect)
+
+    def increment_frame(self):
+        if(self.curframe[0] >= self.dimensions[0]):
+            if self.curframe[1] >= self.dimensions[1]:
+                self.curframe[0] = 0
+                self.curframe[1] = 0
+            else:
+                self.curframe[0] = 0
+                self.curframe[1] += 1
+        else:
+            self.curframe[0] += 1
+
+    def tick(self):
+        self.frametick += 1
+        if self.frametick > self.frameTimer:
+            self.frametick = 0
+            self.increment_frame()
+            self.calculate_active_frame()

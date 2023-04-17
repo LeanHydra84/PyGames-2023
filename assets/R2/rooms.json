@@ -1,10 +1,10 @@
 [
     {
-        "path": "assets\\R2\\demorooms\\startingroom.png",
-        "collider": "assets\\R2\\demorooms\\startingroom_C.png",
+        "path": "assets\\R2\\rooms\\CLASS.png",
+        "collider": "assets\\R2\\rooms\\CLASS_C.png",
 
-        "doorpos": [0, -16],
-        "doorforward": [0, -1],
+        "doorpos": [-64, 0],
+        "doorforward": [-1, 0],
 
         "spawns": [
             {
@@ -15,21 +15,118 @@
         ]
     },
     {
-        "path": "assets\\R2\\demorooms\\demoroom1.png",
-        "collider": "assets\\R2\\demorooms\\demoroom1_C.png",
+        "path": "assets\\R2\\rooms\\CAFETERIA.png",
+        "collider": "assets\\R2\\rooms\\CAFETERIA_C.png",
 
-        "doorpos": [32, 0],
-        "doorforward": [1, 0],
-
-        "spawns": []
-    },
-    {
-        "path": "assets\\R2\\demorooms\\bathroom.png",
-        "collider": "assets\\R2\\demorooms\\bathroom_C.png",
-
-        "doorpos": [-15, 13],
+        "doorpos": [0, 64],
         "doorforward": [0, 1],
 
-        "spawns": []
+        "spawns": [
+            {
+                "type": "Tray",
+                "position": [50, -37],
+                "chance": 1
+            }
+        ]
+    },
+    {
+        "path": "assets\\R2\\rooms\\LOUNGE.png",
+        "collider": "assets\\R2\\rooms\\LOUNGE_C.png",
+
+        "doorpos": [0, 48],
+        "doorforward": [0, 1],
+
+        "spawns": [
+            {
+                "type": "Teacher",
+                "position": [-28, 17],
+                "chance": 1
+            },
+            {
+                "type": "Teacher",
+                "position": [-7, -34],
+                "chance": 1
+            },
+            {
+                "type": "Teacher",
+                "position": [31, 18],
+                "chance": 1
+            }
+        ]
+    },
+    {
+        "path": "assets\\R2\\rooms\\CLASS_RULER.png",
+        "collider": "assets\\R2\\rooms\\CLASS_RULER_C.png",
+
+        "doorpos": [-64, 0],
+        "doorforward": [-1, 0],
+
+        "spawns": [
+            {
+                "type": "Ruler",
+                "position": [0, 0],
+                "chance": 1
+            }
+        ]
+    },
+    {
+        "path": "assets\\R2\\rooms\\BATHROOM.png",
+        "collider": "assets\\R2\\rooms\\BATHROOM_C.png",
+
+        "doorpos": [-64, -64],
+        "doorforward": [-1, 0],
+
+        "spawns": [
+            {
+                "type": "HallMonitor",
+                "position": [42, 16],
+                "chance": 0.5
+            }
+        ]
+    },
+    {
+        "path": "assets\\R2\\rooms\\HISTORY.png",
+        "collider": "assets\\R2\\rooms\\HISTORY_C.png",
+
+        "doorpos": [-64, 0],
+        "doorforward": [-1, 0],
+
+        "spawns": [
+            {
+                "type": "CMPTRHist",
+                "position": [32, 11],
+                "chance": 1
+            }
+        ]
+    },
+    {
+        "path": "assets\\R2\\rooms\\SCIENCE.png",
+        "collider": "assets\\R2\\rooms\\SCIENCE_C.png",
+
+        "doorpos": [0, -64],
+        "doorforward": [0, -1],
+
+        "spawns": [
+            {
+                "type": "CMPTRSci",
+                "position": [-49, 34],
+                "chance": 1
+            }
+        ]
+    },
+    {
+        "path": "assets\\R2\\rooms\\MATH.png",
+        "collider": "assets\\R2\\rooms\\MATH_C.png",
+
+        "doorpos": [-64, 0],
+        "doorforward": [-1, 0],
+
+        "spawns": [
+            {
+                "type": "CMPTRMath",
+                "position": [38, 32],
+                "chance": 1
+            }
+        ]
     }
 ]

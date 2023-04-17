@@ -30,13 +30,13 @@ def vec_round(vec: pygame.Vector2) -> pygame.Vector2:
     return nv
 
 
-def game_loop(state, screen):
+def game_loop(state, screen: pygame.Surface):
 
     clock = pygame.time.Clock()
     pygame.display.set_caption("School Game")
 
-    mapgen.SCALE = 15
-    state.map = mapgen.createmap(5)
+    mapgen.SCALE = 3.75
+    state.map = mapgen.createmap(6)
 
     state.player = Player(state.RESOURCES.PLAYER, state.RESOURCES.FEET)
 
@@ -55,15 +55,6 @@ def game_loop(state, screen):
     layers.add_to("Character", state.player)
     layers.add_to("Feet", state.player.feet)
 
-    state.map.spawn_all(state)
-
-    # TEST PICKUP
-    traypickup = Pickup(state.RESOURCES.TRAY, "Tray", (100, 0), state.RESOURCES.TRAY_HINT)
-    layers.add_to("Interactable", traypickup)
-
-    rulerpickup = Pickup(state.RESOURCES.RULER, "Ruler", (-150, 0), None)
-    layers.add_to("Interactable", rulerpickup)
-
     state.pauseMenu = build_pause_menu(state, 5)
     state.text = Textbox(state)
 
@@ -71,6 +62,12 @@ def game_loop(state, screen):
     layers.add_to("Character", timer.timeRenderer)
 
     interactkey = False
+
+    state.map.spawn_all(state)
+
+
+    pygame.mixer.music.load("assets\\music\\in_game.wav")
+    pygame.mixer.music.play(-1)
 
     keys = state.keys
     while state.running:
@@ -82,13 +79,19 @@ def game_loop(state, screen):
                 return False
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and not state.player.alive():
+
+                if event.key == pygame.K_m:
+                    pygame.mixer.music.set_volume(0)
+                if event.key == pygame.K_p:
+                    state.RESOURCES.set_volume(0)
+
+                elif event.key == pygame.K_SPACE and not state.player.alive():
                     state.running = False
 
-                if event.key == pygame.K_e:
+                elif event.key == pygame.K_e:
                     interactkey = True
 
-                if event.key == pygame.K_ESCAPE:
+                elif event.key == pygame.K_ESCAPE:
                     if state.captureState == None or state.captureState == state.pauseMenu:
                         state.pauseMenu.togglecapture()
                         state.togglepause()
@@ -160,6 +163,11 @@ def game_loop(state, screen):
             state.captureState.update()
             state.captureState.render(screen)
 
+
+        fps = str(int(clock.get_fps()))
+        fpsobject = state.RESOURCES.FONT_25.render(fps, False, pygame.Color(255, 255, 255))
+
+        screen.blit(fpsobject, (0, 50))
 
         clock.tick(60)
         pygame.display.flip()

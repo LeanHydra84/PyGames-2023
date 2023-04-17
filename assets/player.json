@@ -6,9 +6,9 @@
         "transition": 0
     },
     {
-        "path": "assets\\shespriteonmy\\attack.png",
-        "dim": [3, 0],
-        "frames": 2,
+        "path": "assets\\shespriteonmy\\punch.png",
+        "dim": [2, 0],
+        "frames": 5,
         "transition": "Idle"
     },
     {
@@ -37,8 +37,8 @@
     },
     {
         "path": "assets\\shespriteonmy\\rulerattack.png",
-        "dim": [3, 0],
-        "frames": 3,
+        "dim": [5, 0],
+        "frames": 1,
         "transition": "Idle"
     }
 ]

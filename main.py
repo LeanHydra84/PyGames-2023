@@ -15,6 +15,8 @@ class State: # Gamestate handler for all things gamings
 
         self.camera = pygame.Vector2(self.centerScreen)
 
+        self.answers = [False, False, False]
+
     def quit(self):
         self.running = False
     def pause(self):
@@ -23,6 +25,18 @@ class State: # Gamestate handler for all things gamings
         self.paused = False
     def togglepause(self):
         self.paused = not self.paused
+
+    def get_answer(self, string):
+        match string:
+            case "Hist":
+                self.answers[0] = True
+            case "Sci":
+                self.answers[1] = True
+            case "Math":
+                self.answers[2] = True
+    
+    def win_condition(self) -> bool:
+        return self.answers[0] and self.answers[1] and self.answers[2]
 
 class MenuState:
     def __init__(self):
@@ -63,6 +77,14 @@ def main():
     quitbutton.hoverColor = pygame.Color(200, 30, 30)
     mainmenu.add_button(quitbutton, menustate.stop_running)
 
+
+    title = menu.BounceText(resourcedictionary.MAIN_MENU_TITLE, (1280/2, 0), 2)
+    mainmenu.add_static(title)
+
+    pygame.mixer.music.set_volume(0.05)
+    pygame.mixer.music.load("assets\\music\\main_menu.wav")
+    pygame.mixer.music.play(-1)
+
     # Menu Loop
     while menustate.running:
         for event in pygame.event.get():
@@ -72,6 +94,10 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mainmenu.register_click(pygame.mouse.get_pos())
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    pygame.mixer.music.set_volume(0)
         
         
         if menustate.do_startgame:
@@ -82,7 +108,12 @@ def main():
             returncode = game_loop(state, screen)
             if returncode == False:
                 break
+
+            pygame.mixer.music.load("assets\\music\\main_menu.wav")
+            pygame.mixer.music.play(-1)
             menustate.do_startgame = False
+
+        mainmenu.update()
 
         # Draw
 

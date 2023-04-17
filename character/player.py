@@ -3,12 +3,13 @@ import rendering.stategraph as graph
 import character.feet as feet
 import character.unconscious as unconscious
 
-import capture.deathscreen as death
+import capture.menu as menu
 
 from math import acos
 from collections import deque
 
 MAXTIME = 5
+max_enemies_per_hit = 2
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, sheet, rsFeet):
@@ -65,7 +66,7 @@ class Player(pygame.sprite.Sprite):
             # Debug attack circle
             #pygame.draw.circle(state.DEBUGSCREEN, (255, 0, 0), attackPos, attackRadius)
 
-            hitflag = False
+            hitcount = 0
             for spr in enemygroup:
                 if attackPos.distance_squared_to(spr.position) < attackRadius**2:
                     deadpos = spr.position
@@ -74,9 +75,11 @@ class Player(pygame.sprite.Sprite):
                     body = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, deadpos)
                     state.renderLayers.add_to("DeadBodies", body)
 
-                    hitflag = True
+                    hitcount += 1
+                    if hitcount > max_enemies_per_hit:
+                        break
                 
-            if hitflag:
+            if hitcount > 0:
                 state.RESOURCES.SND_PUNCH.play()
             else:
                 state.RESOURCES.SND_WHIFF.play()
@@ -112,12 +115,14 @@ class Player(pygame.sprite.Sprite):
 
 
     def kill_me(self, state):
+        return
+
         self.kill()
         newspr = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, self.position)
         state.renderLayers.add_to("DeadBodies", newspr)
 
         #death.DeathScreen(state, state.RESOURCES.DEATH_TEXT, 100, 5, 2).togglecapture()
-        death.create_death_screen(state).togglecapture()
+        menu.create_death_screen(state).togglecapture()
         state.pause()
         state.RESOURCES.SND_DEATH_SOUND.play()
 

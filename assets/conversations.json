@@ -1,0 +1,39 @@
+{
+    "manifest": [
+
+        {
+            "handle": "flips",
+            "path": "assets\\menu\\teacherclose.png",
+            "name": "Mr. Flip",
+            "color": [48, 121, 255]
+        },
+        {
+            "handle": "YOU",
+            "path": "assets\\menu\\hannaclose.png",
+            "name": "Hanna",
+            "color": [232, 88, 208]
+        }
+    ],
+
+    "conversations":
+    {
+        "startgame": [
+            ["flips", "Alright class! The\nsemester exam is in 2 minutes!"],
+            ["YOU", "Woah woah woah! What!!!\nI'm so unprepared!"],
+            ["flips", "Well, you should have studied then!"],
+            ["YOU", "Uhhh... Can I go the bathroom \nMr. Flip? It's an emergency!"],
+            ["flips", "Sure... I don't care."]
+        ],
+        "on_win": [
+            ["flips", "Welcome back Hanna, just in\ntime for the test!"],
+            ["YOU", "Alright! I think I'm gonna do just fine!"],
+            ["flips", "Take your seat, let's get started."]
+        ],
+        "in_game_neutral": [
+            ["flips", "Great, you're back. Take\nyour seat and we'll start."],
+            ["YOU", "Uh... not just yet Mr. Flip!"]
+        ]
+    }
+
+
+}

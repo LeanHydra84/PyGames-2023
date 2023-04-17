@@ -19,7 +19,7 @@ class HallMonitor(eb.EnemyBase):
     attackTime = 12
 
     def __init__(self, resources, rsFeet, state):
-        super().__init__(resources, rsFeet, state, 2.1)
+        super().__init__(resources, rsFeet, state, 2.6)
 
     def ai_tick(self, state):
 
