@@ -67,7 +67,7 @@ def game_loop(state, screen: pygame.Surface):
     state.pauseMenu = build_pause_menu(state, 5)
     state.text = Textbox(state)
 
-    timer = FormattedCountdownTimer(120, pygame.font.SysFont("Geneva", 45))
+    timer = FormattedCountdownTimer(301, pygame.font.SysFont("Geneva", 45))
     layers.add_to("Character", timer.timeRenderer)
 
     interactkey = False
