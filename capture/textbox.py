@@ -11,7 +11,7 @@ class Textbox(capturestate.CaptureState):
         self.convoManger = state.RESOURCES.CONVERSATION
 
         self.textObject = None
-        self.font = pygame.font.SysFont("Arial", 40) # Import font
+        self.font = state.RESOURCES.FONT_40
         self.group = pygame.sprite.Group()
 
         self.background = pygame.transform.scale_by(pygame.image.load("assets\\menu\\textbox_border1.png").convert_alpha(), 5)

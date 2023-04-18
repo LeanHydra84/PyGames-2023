@@ -170,7 +170,7 @@ def create_death_screen(state) -> OverlayMenu:
     
     font: pygame.font.Font = state.RESOURCES.FONT_25
     coinSpr = pygame.sprite.Sprite()
-    coinSpr.image = font.render("Insert coin to continue... (Or press SPACE)", True, pygame.Color(255, 255, 255))
+    coinSpr.image = font.render("Insert coin to continue... Or press SPACE", True, pygame.Color(255, 255, 255))
     coinSpr.rect = coinSpr.image.get_rect(bottomleft=(30, state.screensize[1] - 30))
     death.add_static(coinSpr, True)
 

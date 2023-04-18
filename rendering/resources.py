@@ -57,7 +57,9 @@ class GlobalResources:
         self.set_volume(1)
 
         # FONT
-        self.FONT_25 = pygame.font.SysFont("Arial", 25)
+        #self.FONT_25 = pygame.font.SysFont("Arial", 25)
+        self.FONT_25 = pygame.font.Font("assets\\Gamefont-Regular.ttf", 25)
+        self.FONT_40 = pygame.font.Font("assets\\Gamefont-Regular.ttf", 40)
 
         # CONVERSATIONS
         self.CONVERSATION = convo.ConversationManager("assets\\conversations.json")

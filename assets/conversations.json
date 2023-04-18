@@ -16,7 +16,7 @@
         {
             "handle": "hm",
             "path": "assets\\menu\\hallclose.png",
-            "name": "Hall Monitor",
+            "name": "Monitor",
             "color": [255, 40, 40]
         }
     ],
@@ -24,25 +24,27 @@
     "conversations":
     {
         "startgame": [
-            ["flips", "Alright class! The\nsemester exam is in 2 minutes!"],
+            ["flips", "Alright class! The\nsemester exam is in\nfive minutes!"],
             ["YOU", "Woah woah woah! What!!!\nI'm so unprepared!"],
-            ["flips", "Well, you should have studied then!"],
-            ["YOU", "Uhhh... Can I go the bathroom \nMr. Flip? It's an emergency!"],
-            ["flips", "...Fine. But someone else has the\nhall pass, so don't get caught\nby the hall monitors!"]
+            ["flips", "Well, you should\nhave studied then!"],
+            ["YOU", "Uhhh... Can I go to\nthe bathroom?\nIt's an emergency!"],
+            ["flips", "...Fine. But someone\nelse has the hall pass"],
+            ["flips", "So don't get caught\nby the hall monitors!"]
         ],
         "on_win": [
-            ["flips", "Welcome back Hanna, just in\ntime for the test!"],
-            ["YOU", "Alright! I think I'm gonna do just fine!"],
-            ["flips", "Take your seat, let's get started."]
+            ["flips", "Welcome back Hanna,\njust in time\nfor the test!"],
+            ["YOU", "Alright! I think\nI'm gonna crush it!"],
+            ["flips", "Take your seat,\nlet's get started."]
         ],
         "in_game_neutral": [
-            ["flips", "Great, you're back. Take\nyour seat and we'll start."],
-            ["YOU", "Uh... not just yet Mr. Flip!"]
+            ["flips", "Great, you're back.\nTake your seat\nand we'll start."],
+            ["YOU", "Uh... not just yet!"]
         ],
         "in_game_hint": [
-            ["flips", "Did you know there are two\nrooms in this school that\ncontain powerups?"],
+            ["flips", "Did you know two\nrooms in this school\ncontain powerups?"],
             ["YOU", "... What?"],
-            ["flips", "Yeah, the cafeteria and the\nspare classroom. Check them out\nif you have some time"],
+            ["flips", "Yeah, the cafeteria and\nthe spare classroom."],
+            ["flips", "Check them out\nif you have some time"],
             ["YOU", "... Okay man. Sure thing."]
         ],
 
@@ -51,26 +53,27 @@
             ["YOU", "Too late!"],
             ["hm", "Get back to class...\nOr I'll get a teacher!"],
             ["YOU", "I've got places to be man!"],
-            ["hm", "That does it! TEACHER!!!!"]
+            ["hm", "That does it!\nTEACHER!!!!"]
         ],
 
         "second_answer_get": [
-            ["hm", "Somebody needs to stop her!"],
+            ["hm", "Somebody needs to\nstop her!"],
             ["YOU", "I'm too fast!"],
             ["hm", "Aahhhhhh!!!"]
         ],
 
         "third_answer_get": [
             ["hm", "That does it!"],
-            ["hm", "I'll never let you get back to class now!"],
-            ["YOU", "Uh oh... I've gotta go!"]
+            ["hm", "I'll never let\nyou get back to\nclass now!"],
+            ["YOU", "Uh oh...\nI've gotta go!"]
         ],
         
         "walk_into_hallway": [
-            ["YOU", "I have to get the answers to\nthis test!"],
-            ["YOU", "I know there are three sections:\nMATH, SCIENCE, and HISTORY"],
-            ["YOU", "So I'll have to find answers to all three!"],
-            ["YOU", "Maybe I can find the answers on\nsome computer..."]
+            ["YOU", "I have to get\nthe answers to\nthis test!"],
+            ["YOU", "I know there are\nthree sections:"],
+            ["YOU", "MATH, SCIENCE,\nand HISTORY"],
+            ["YOU", "So I'll have to\nfind answers to\nall three!"],
+            ["YOU", "Maybe I can\nfind them on\nsome computer..."]
         ]
     }
 

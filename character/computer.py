@@ -2,6 +2,8 @@ import pygame
 
 from rendering.stategraph import SingleStateGraph
 
+
+
 class Computer(pygame.sprite.Sprite):
     def __init__(self, sprite, offsprite, pos, answerType):
         pygame.sprite.Sprite.__init__(self)
