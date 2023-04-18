@@ -28,7 +28,7 @@
             ["YOU", "Woah woah woah! What!!!\nI'm so unprepared!"],
             ["flips", "Well, you should have studied then!"],
             ["YOU", "Uhhh... Can I go the bathroom \nMr. Flip? It's an emergency!"],
-            ["flips", "Sure... I don't care."]
+            ["flips", "...Fine. But someone else has the\nhall pass, so don't get caught\nby the hall monitors!"]
         ],
         "on_win": [
             ["flips", "Welcome back Hanna, just in\ntime for the test!"],
@@ -64,6 +64,13 @@
             ["hm", "That does it!"],
             ["hm", "I'll never let you get back to class now!"],
             ["YOU", "Uh oh... I've gotta go!"]
+        ],
+        
+        "walk_into_hallway": [
+            ["YOU", "I have to get the answers to\nthis test!"],
+            ["YOU", "I know there are three sections:\nMATH, SCIENCE, and HISTORY"],
+            ["YOU", "So I'll have to find answers to all three!"],
+            ["YOU", "Maybe I can find the answers on\nsome computer..."]
         ]
     }
 

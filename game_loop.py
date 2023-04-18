@@ -17,7 +17,7 @@ from capture.textbox import Textbox
 
 lerpSpeed = 5/60
 
-playerPickupDistance = 50**2
+playerPickupDistance = 75**2
 
 class E_Prompt(pygame.sprite.Sprite):
     def __init__(self, sheet, dim):
@@ -73,6 +73,8 @@ def game_loop(state, screen: pygame.Surface):
 
     interactkey = False
 
+    hasGivenIntroText = False
+
     state.map.spawn_all(state)
 
     eprompt = E_Prompt(state.RESOURCES.E_PROMPT, [1, 0])
@@ -82,7 +84,6 @@ def game_loop(state, screen: pygame.Surface):
 
     keys = state.keys
     while state.running:
-        
         for event in pygame.event.get():
 
             # Process Events
@@ -152,7 +153,7 @@ def game_loop(state, screen: pygame.Surface):
         # Update
         if not state.paused:
             if state.winGame:
-                return win_game_scene(screen, state.RESOURCES.WINNINGSCREEN)
+                return win_game_scene(screen, state)
 
 
             layers.update(state)
@@ -179,6 +180,13 @@ def game_loop(state, screen: pygame.Surface):
                 state.player.kill_me(state)
 
         interactkey = False
+
+        if not hasGivenIntroText:
+            if state.player.position.y < -100:
+                state.text.begin_conversation("walk_into_hallway")
+                state.text.togglecapture()
+                state.pause()
+                hasGivenIntroText = True
 
         hue.update()
 

@@ -13,7 +13,7 @@ class State: # Gamestate handler for all things gamings
         self.running = True
         self.captureState = None
         self.winGame = False
-        self.camera = pygame.Vector2(self.centerScreen)
+        self.camera = pygame.Vector2(self.centerScreen) - (0, 200)
 
         self.answers = [False, False, False]
 
@@ -36,7 +36,6 @@ class State: # Gamestate handler for all things gamings
                 self.answers[2] = True
     
     def win_condition(self) -> bool:
-        return True
         return self.answers[0] and self.answers[1] and self.answers[2]
     
     def answer_count(self) -> int:

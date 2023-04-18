@@ -86,7 +86,7 @@ class BuildDetails:
         self.deadEnds = []
         self.spawns = []
         self.group = group
-        self.spawnIndex = 0
+        self.spawnIndex = 1
 
         self.hm_spawnquota = 15
         self.tch_spawnquota = 5

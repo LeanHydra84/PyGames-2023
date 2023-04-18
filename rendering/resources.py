@@ -38,6 +38,7 @@ class GlobalResources:
         self.PROJECTILE = pygame.transform.scale_by( pygame.image.load("assets\\shespriteonmy\\projectile.png").convert_alpha(), self.scale )
         self.DEATH_TEXT = pygame.image.load("assets\\menu\\deathtext.png").convert_alpha()
         self.WINNINGSCREEN = pygame.image.load("assets\\menu\\winningmed.png").convert()
+        self.YOUWON = pygame.transform.scale_by(pygame.image.load("assets\\menu\\youwon.png").convert_alpha(), 1.5)
 
         # ITEMS
         self.TRAY = pygame.transform.scale_by(pygame.image.load("assets\\items\\tray.png").convert_alpha(), self.scale * 0.75)

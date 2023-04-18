@@ -16,7 +16,7 @@ class MrFlip(pygame.sprite.Sprite):
     def update(self, state):
         self.graph.tick()
 
-        self.image = self.graph.activeFrame
+        self.image = pygame.transform.rotate(self.graph.activeFrame, 90)
         self.rect = self.image.get_rect(center=self.position + state.camera)
 
         if self.interaction_count == 0:

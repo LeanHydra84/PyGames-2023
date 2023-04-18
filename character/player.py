@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.rect : pygame.Rect = None
 
         # Movement
-        self.position = pygame.Vector2(0, 0)
+        self.position = pygame.Vector2(0, 200)
         self.rotation = 0
         self.speed = 3
         self.moving = False
@@ -125,8 +125,8 @@ class Player(pygame.sprite.Sprite):
 
 
     def kill_me(self, state):
-        return
 
+        pygame.mixer.music.stop()
         self.kill()
         newspr = unconscious.Unconscious(state.RESOURCES.DEADBODY_TESTSPRITE, self.position)
         state.renderLayers.add_to("DeadBodies", newspr)
