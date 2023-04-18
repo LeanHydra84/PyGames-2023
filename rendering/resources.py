@@ -45,15 +45,23 @@ class GlobalResources:
         self.RULER = pygame.transform.scale_by(pygame.image.load("assets\\items\\ruler.png").convert_alpha(), self.scale * 0.75)
 
         self.TRAY_HINT = pygame.transform.scale_by(pygame.image.load("assets\\items\\tray_hint.png").convert_alpha(), 1.5)
+        self.RULER_HINT = pygame.transform.scale_by(pygame.image.load("assets\\items\\ruler_hint.png").convert_alpha(), 1.5)
 
         # AUDIO
         self.SND_PUNCH = pygame.mixer.Sound("assets\\audio\\punch_test.wav")
         self.SND_WHIFF = pygame.mixer.Sound("assets\\audio\\whiff_test.mp3")
-        self.SND_HADOUKEN = pygame.mixer.Sound("assets\\audio\\hadouken.mp3")
+        self.SND_HADOUKEN = pygame.mixer.Sound("assets\\audio\\getback.mp3")
         self.SND_TONK = pygame.mixer.Sound("assets\\audio\\tonk.wav")
         self.SND_PICKUP_ITEM = pygame.mixer.Sound("assets\\audio\\temp_coinsound.wav")
-        self.SND_DEATH_SOUND = pygame.mixer.Sound("assets\\audio\\InstagramBoom.mp3")
+        self.SND_DEATH_SOUND = pygame.mixer.Sound("assets\\audio\\rulersmack.wav")
 
+        # ON GET ANSWER
+        self.ON_ANSWER = pygame.image.load("assets\\menu\\answer.png").convert_alpha()
+        self.MATH = pygame.image.load("assets\\menu\\math.png").convert_alpha()
+        self.HISTORY = pygame.image.load("assets\\menu\\history.png").convert_alpha()
+        self.SCIENCE = pygame.image.load("assets\\menu\\science.png").convert_alpha()
+
+        # Set all Audio Volume
         self.set_volume(1)
 
         # FONT
@@ -67,7 +75,7 @@ class GlobalResources:
     def set_volume(self, val):
         self.SND_PUNCH.set_volume(0.5 * val)
         self.SND_WHIFF.set_volume(0.5 * val)
-        self.SND_HADOUKEN.set_volume(1 * val)
+        self.SND_HADOUKEN.set_volume(0.5 * val)
         self.SND_TONK.set_volume(1 * val)
         self.SND_PICKUP_ITEM.set_volume(0.5 * val)
         self.SND_DEATH_SOUND.set_volume(0.25 * val)

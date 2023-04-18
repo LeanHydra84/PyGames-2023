@@ -43,7 +43,6 @@ def vec_round(vec: pygame.Vector2) -> pygame.Vector2:
 def game_loop(state, screen: pygame.Surface):
 
     clock = pygame.time.Clock()
-    pygame.display.set_caption("School Game")
 
     mapgen.SCALE = 3.75
     state.map = mapgen.createmap(6)

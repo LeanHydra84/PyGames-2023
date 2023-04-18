@@ -41,7 +41,7 @@ def spawn(type: str, pos, state):
         init_teacher_atpos(state, pos)
 
     elif type == "Ruler":
-        ruler = Pickup(state.RESOURCES.RULER, "Ruler", pos, None) # None so far
+        ruler = Pickup(state.RESOURCES.RULER, "Ruler", pos, state.RESOURCES.RULER_HINT)
         state.renderLayers.add_to("Interactable", ruler)
 
     elif type == "Tray":

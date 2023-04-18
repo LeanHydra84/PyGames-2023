@@ -11,3 +11,6 @@ Hit block sound effect: "FX Tin Plate 22.wav" by Department64
 	https://freesound.org/people/Department64/sounds/550210/
 Powerup pickup sound effect: "Coins 1" by ProjectsUO12
 	https://freesound.org/people/ProjectsU012/sounds/341695/
+
+All freesound.org sounds are provided under the Attribution 4.0 License
+https://creativecommons.org/licenses/by/4.0/

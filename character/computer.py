@@ -2,7 +2,34 @@ import pygame
 
 from rendering.stategraph import SingleStateGraph
 
+LIFESPAN = 60
+class OverlayAnswer(pygame.sprite.Sprite):
+    def __init__(self, state, str):
+        pygame.sprite.Sprite.__init__(self)
+        
+        self.image: pygame.Surface = state.RESOURCES.ON_ANSWER.copy()
+        
+        nameimage = None
+        match str:
+            case "Hist":
+                nameimage = state.RESOURCES.HISTORY
+            case "Sci":
+                nameimage = state.RESOURCES.SCIENCE
+            case "Math":
+                nameimage = state.RESOURCES.MATH
+        
+        if nameimage == None:
+            return
+        
+        self.image.blit(nameimage, (0, 0))
+        self.rect = self.image.get_rect(center=state.centerScreen)
 
+        self.framecounter = 0
+
+    def update(self, state):
+        self.framecounter += 1
+        if self.framecounter > LIFESPAN:
+            self.kill()
 
 class Computer(pygame.sprite.Sprite):
     def __init__(self, sprite, offsprite, pos, answerType):
@@ -19,8 +46,6 @@ class Computer(pygame.sprite.Sprite):
         self.image = self.graph.activeFrame
         self.rect = self.image.get_rect(bottomright=(0, 0))
 
-        
-        
     def update(self, state):
         if not self.used:
             self.graph.tick()
@@ -46,6 +71,8 @@ class Computer(pygame.sprite.Sprite):
                 convo = "second_answer_get"
             case 3:
                 convo = "third_answer_get"
+
+        state.renderLayers.add_to("Character", OverlayAnswer(state, self.answerType))
 
         if convo == None:
             return

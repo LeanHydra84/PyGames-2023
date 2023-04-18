@@ -65,10 +65,15 @@ def main():
     pygame.mixer.init()
 
     screen = pygame.display.set_mode((1280, 720))
+    pygame.display.set_caption("Cram Crawl")
+
+
     clock = pygame.time.Clock()
 
     resourcedictionary = resources.GlobalResources(5)
     resourcedictionary.load()
+
+    pygame.display.set_icon(resourcedictionary.HM_UNC)
 
     # FLAGS
     menustate = MenuState()
