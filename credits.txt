@@ -1,0 +1,13 @@
+Programming - Augustus Lindell
+Sprites, Music, etc. - Jake Matz
+
+Sounds sourced from Freesound.org:
+
+Punch sound effect: "Cyber Punch 02" by JohnLoser
+	https://freesound.org/people/JohnLoser/sounds/573377/
+Hit Miss sound effect: "g_whiff_2.mp3" by deleted_user_6479820
+	https://freesound.org/people/deleted_user_6479820/sounds/353046/
+Hit block sound effect: "FX Tin Plate 22.wav" by Department64
+	https://freesound.org/people/Department64/sounds/550210/
+Powerup pickup sound effect: "Coins 1" by ProjectsUO12
+	https://freesound.org/people/ProjectsU012/sounds/341695/

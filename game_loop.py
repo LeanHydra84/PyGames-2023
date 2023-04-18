@@ -68,7 +68,7 @@ def game_loop(state, screen: pygame.Surface):
     state.pauseMenu = build_pause_menu(state, 5)
     state.text = Textbox(state)
 
-    timer = FormattedCountdownTimer(120, pygame.font.SysFont("Arial", 35))
+    timer = FormattedCountdownTimer(120, pygame.font.SysFont("Geneva", 45))
     layers.add_to("Character", timer.timeRenderer)
 
     interactkey = False
@@ -197,12 +197,6 @@ def game_loop(state, screen: pygame.Surface):
         if state.captureState != None:
             state.captureState.update()
             state.captureState.render(screen)
-
-
-        fps = str(int(clock.get_fps()))
-        fpsobject = state.RESOURCES.FONT_25.render(fps, False, pygame.Color(255, 255, 255))
-
-        screen.blit(fpsobject, (0, 50))
 
         clock.tick(60)
         pygame.display.flip()
